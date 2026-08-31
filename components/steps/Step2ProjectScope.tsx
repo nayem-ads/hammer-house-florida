@@ -16,106 +16,78 @@ export function Step2ProjectScope({ onBack, onSelect, selectedType, city }: Step
 
   const handleCardClick = (type: 'Replacement' | 'Repair') => {
     setSelected(type);
-    setTimeout(() => {
-      onSelect(type);
-    }, 180);
+    setTimeout(() => onSelect(type), 200);
   };
 
   return (
-    <div className="space-y-6 sm:space-y-8 animate-fade-in text-center">
-      {/* Brand Header */}
+    <div className="text-center animate-fade-in">
       <HammerHouseLogo size="md" align="center" />
 
-      {/* Main Headline */}
-      <div className="space-y-1.5 pt-1 max-w-md mx-auto">
-        <h2 className="font-sans text-2xl sm:text-[28px] font-black text-[#0F172A] tracking-[-0.03em] leading-tight">
-          What type of roofing service do you need?
-        </h2>
-        <p className="text-sm font-medium text-[#475569]">
-          Select one to calculate accurate pricing in <strong className="text-[#0F172A]">{city}, FL</strong>
-        </p>
-      </div>
+      <h2 className="mt-10 mb-8 text-[24px] sm:text-[28px] font-bold text-[#1E3A3A] leading-tight italic">
+        Do you need to replace or repair an existing roof?
+      </h2>
 
-      {/* 2-Tone High-Converting Quiz Cards (Reference Style) */}
-      <div className="grid grid-cols-2 gap-4 sm:gap-5 max-w-md mx-auto pt-1">
-        {/* Replace Card */}
+      {/* Two side-by-side cards */}
+      <div className="grid grid-cols-2 gap-4 mb-10">
+        {/* Replace */}
         <button
           type="button"
           onClick={() => handleCardClick('Replacement')}
-          className={`rounded-2xl border-2 overflow-hidden transition-all duration-200 cursor-pointer flex flex-col items-stretch group text-left ${
+          className={`rounded-xl border transition-all duration-150 cursor-pointer flex flex-col items-center pt-8 pb-5 px-4 ${
             selected === 'Replacement'
-              ? 'border-[#8B1122] ring-4 ring-[#8B1122]/15 shadow-lg scale-[1.02]'
-              : 'border-slate-200 hover:border-[#8B1122] hover:shadow-md active:scale-[0.98]'
+              ? 'border-[#8B1122] bg-[#FFF5F5] shadow-md'
+              : 'border-[#A3B8B0] bg-white hover:border-[#8B1122]/50 hover:shadow-sm'
           }`}
         >
-          {/* Top Neutral Area with Icon */}
-          <div className="bg-[#F8FAFC] py-6 sm:py-8 flex items-center justify-center group-hover:bg-[#F1F5F9] transition-colors">
-            <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-white border border-slate-200/80 shadow-sm flex items-center justify-center group-hover:scale-105 transition-transform">
-              <svg className="w-10 h-10 sm:w-12 sm:h-12 text-[#8B1122]" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M24 8L8 20H14V38H34V20H40L24 8Z" stroke="#8B1122" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="#FFF1F2" />
-                <path d="M19 24C19 21.2386 21.2386 19 24 19C26.1 19 27.8 20.3 28.6 22" stroke="#8B1122" strokeWidth="2.5" strokeLinecap="round" />
-                <path d="M29 19V22H26" stroke="#8B1122" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-                <path d="M29 29C29 31.7614 26.7614 34 24 34C21.9 34 20.2 32.7 19.4 31" stroke="#8B1122" strokeWidth="2.5" strokeLinecap="round" />
-                <path d="M19 34V31H22" stroke="#8B1122" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </div>
+          {/* Illustration */}
+          <div className="w-20 h-20 rounded-full bg-[#E8F4F8] flex items-center justify-center mb-4">
+            <svg className="w-12 h-12" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M32 10L10 28H16V50H48V28H54L32 10Z" stroke="#7EC8D9" strokeWidth="2" fill="#F0F9FB" />
+              <circle cx="36" cy="32" r="5" stroke="#7EC8D9" strokeWidth="2" />
+              <path d="M28 26L32 31" stroke="#7EC8D9" strokeWidth="2" strokeLinecap="round" />
+              <path d="M39 36L44 40" stroke="#7EC8D9" strokeWidth="2" strokeLinecap="round" />
+            </svg>
           </div>
-
-          {/* Bottom Solid Action Bar */}
-          <div className="bg-[#8B1122] py-3.5 px-4 text-center">
-            <span className="font-sans font-extrabold text-sm sm:text-base text-white tracking-tight">
-              Full Replacement
-            </span>
-          </div>
+          <span className="text-base font-medium text-[#1E3A3A]">Replace</span>
         </button>
 
-        {/* Repair Card */}
+        {/* Repair */}
         <button
           type="button"
           onClick={() => handleCardClick('Repair')}
-          className={`rounded-2xl border-2 overflow-hidden transition-all duration-200 cursor-pointer flex flex-col items-stretch group text-left ${
+          className={`rounded-xl border transition-all duration-150 cursor-pointer flex flex-col items-center pt-8 pb-5 px-4 ${
             selected === 'Repair'
-              ? 'border-[#8B1122] ring-4 ring-[#8B1122]/15 shadow-lg scale-[1.02]'
-              : 'border-slate-200 hover:border-[#8B1122] hover:shadow-md active:scale-[0.98]'
+              ? 'border-[#8B1122] bg-[#FFF5F5] shadow-md'
+              : 'border-[#A3B8B0] bg-white hover:border-[#8B1122]/50 hover:shadow-sm'
           }`}
         >
-          {/* Top Neutral Area with Icon */}
-          <div className="bg-[#F8FAFC] py-6 sm:py-8 flex items-center justify-center group-hover:bg-[#F1F5F9] transition-colors">
-            <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-white border border-slate-200/80 shadow-sm flex items-center justify-center group-hover:scale-105 transition-transform">
-              <svg className="w-10 h-10 sm:w-12 sm:h-12 text-[#8B1122]" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M24 8L8 20H14V38H34V20H40L24 8Z" stroke="#8B1122" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="#FFF1F2" />
-                <path d="M24 16L22 22L26 25L24 30" stroke="#8B1122" strokeWidth="2" strokeLinecap="round" />
-                <path d="M19 15L23 20" stroke="#8B1122" strokeWidth="2.5" strokeLinecap="round" />
-                <path d="M23 18L32 10L35 13L26 21" stroke="#8B1122" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </div>
+          {/* Illustration */}
+          <div className="w-20 h-20 rounded-full bg-[#E8F4F8] flex items-center justify-center mb-4">
+            <svg className="w-12 h-12" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M32 10L10 28H16V50H48V28H54L32 10Z" stroke="#7EC8D9" strokeWidth="2" fill="#F0F9FB" />
+              <path d="M28 20L25 30" stroke="#7EC8D9" strokeWidth="2" strokeLinecap="round" />
+              <path d="M35 16L38 22" stroke="#7EC8D9" strokeWidth="2" strokeLinecap="round" />
+              <path d="M34 30L42 22L46 26L38 34" stroke="#7EC8D9" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
           </div>
-
-          {/* Bottom Solid Action Bar */}
-          <div className="bg-[#8B1122] py-3.5 px-4 text-center">
-            <span className="font-sans font-extrabold text-sm sm:text-base text-white tracking-tight">
-              Roof Repair
-            </span>
-          </div>
+          <span className="text-base font-medium text-[#1E3A3A]">Repair</span>
         </button>
       </div>
 
-      {/* Symmetrical Bottom Navigation */}
-      <div className="flex items-center justify-center gap-4 max-w-sm mx-auto pt-2">
+      {/* Navigation */}
+      <div className="flex items-center gap-4">
         <button
           type="button"
           onClick={onBack}
-          className="w-13 h-13 rounded-2xl border-2 border-slate-300 text-slate-600 hover:text-[#0F172A] hover:border-[#0F172A] transition-colors flex items-center justify-center cursor-pointer shadow-sm shrink-0"
-          aria-label="Go back"
+          className="w-12 h-12 rounded-full border border-[#A3B8B0] text-[#A3B8B0] hover:text-[#1E3A3A] hover:border-[#1E3A3A] transition-colors flex items-center justify-center cursor-pointer shrink-0"
         >
           <ArrowLeft className="w-5 h-5" />
         </button>
-
         <button
           type="button"
           onClick={() => selected && onSelect(selected)}
           disabled={!selected}
-          className="flex-1 h-13 bg-[#8B1122] hover:bg-[#730C1A] active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none text-white font-sans font-extrabold text-base tracking-wide rounded-2xl shadow-btn transition-all flex items-center justify-center cursor-pointer"
+          className="flex-1 h-14 bg-[#F5C882] hover:bg-[#EDB960] active:scale-[0.98] disabled:opacity-40 text-white font-sans font-bold text-base tracking-widest rounded-xl transition-all flex items-center justify-center cursor-pointer"
         >
           NEXT
         </button>
