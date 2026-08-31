@@ -4,16 +4,19 @@ import React, { useState } from 'react';
 import { Step1ZipHook } from './steps/Step1ZipHook';
 import { Step2ProjectScope } from './steps/Step2ProjectScope';
 import { Step3SearchingMatcher } from './steps/Step3SearchingMatcher';
-import { Step4NameAddress } from './steps/Step4NameAddress';
-import { Step5ContactTcpa } from './steps/Step5ContactTcpa';
-import { Step6Confirmation } from './steps/Step6Confirmation';
+import { Step4Name } from './steps/Step4Name';
+import { Step5Address } from './steps/Step5Address';
+import { Step6Contact } from './steps/Step6Contact';
+import { Step7Confirmation } from './steps/Step7Confirmation';
 
 export interface FunnelState {
   zipCode: string;
   city: string;
   state: string;
   county: string;
-  serviceType: 'Replacement' | 'Repair' | 'Inspection';
+  serviceType: 'Replacement' | 'Repair';
+  firstName: string;
+  lastName: string;
   fullName: string;
   streetAddress: string;
   isHomeowner: boolean;
@@ -34,6 +37,8 @@ export function HammerHouseFunnel() {
     state: 'FL',
     county: 'Miami-Dade',
     serviceType: 'Replacement',
+    firstName: '',
+    lastName: '',
     fullName: '',
     streetAddress: '',
     isHomeowner: true,
@@ -42,6 +47,7 @@ export function HammerHouseFunnel() {
     tcpaConsent: true,
   });
 
+  // Step 1 -> Step 2
   const handleStep1Success = (location: { zipCode: string; city: string; state: string; county: string }) => {
     setFormData((prev) => ({
       ...prev,
@@ -53,26 +59,40 @@ export function HammerHouseFunnel() {
     setCurrentStep(2);
   };
 
-  const handleStep2Select = (serviceType: 'Replacement' | 'Repair' | 'Inspection') => {
+  // Step 2 -> Step 3
+  const handleStep2Select = (serviceType: 'Replacement' | 'Repair') => {
     setFormData((prev) => ({ ...prev, serviceType }));
     setCurrentStep(3);
   };
 
+  // Step 3 -> Step 4
   const handleStep3Complete = () => {
     setCurrentStep(4);
   };
 
-  const handleStep4Next = (data: { fullName: string; streetAddress: string; isHomeowner: boolean }) => {
+  // Step 4 -> Step 5
+  const handleStep4Next = (data: { firstName: string; lastName: string; fullName: string }) => {
     setFormData((prev) => ({
       ...prev,
+      firstName: data.firstName,
+      lastName: data.lastName,
       fullName: data.fullName,
-      streetAddress: data.streetAddress,
-      isHomeowner: data.isHomeowner,
     }));
     setCurrentStep(5);
   };
 
-  const handleStep5Submit = async (data: { email: string; phone: string; tcpaConsent: boolean }) => {
+  // Step 5 -> Step 6
+  const handleStep5Next = (data: { streetAddress: string; isHomeowner: boolean }) => {
+    setFormData((prev) => ({
+      ...prev,
+      streetAddress: data.streetAddress,
+      isHomeowner: data.isHomeowner,
+    }));
+    setCurrentStep(6);
+  };
+
+  // Step 6 -> Submit -> Step 7
+  const handleStep6Submit = async (data: { email: string; phone: string; tcpaConsent: boolean }) => {
     setIsSubmitting(true);
     setSubmitError(null);
 
@@ -93,7 +113,7 @@ export function HammerHouseFunnel() {
       const json = await res.json();
 
       if (!res.ok) {
-        throw new Error(json?.error || 'Failed to submit appointment request.');
+        throw new Error(json?.error || 'Failed to submit estimate request.');
       }
 
       setFormData((prev) => ({
@@ -102,7 +122,7 @@ export function HammerHouseFunnel() {
         leadCode: json.leadCode || `HH-FL-${Math.floor(10000 + Math.random() * 90000)}`,
       }));
 
-      setCurrentStep(6);
+      setCurrentStep(7);
     } catch (err: any) {
       console.error('[Submission Error]', err);
       setSubmitError(err?.message || 'Something went wrong. Please try again.');
@@ -118,6 +138,8 @@ export function HammerHouseFunnel() {
       state: 'FL',
       county: 'Miami-Dade',
       serviceType: 'Replacement',
+      firstName: '',
+      lastName: '',
       fullName: '',
       streetAddress: '',
       isHomeowner: true,
@@ -129,33 +151,22 @@ export function HammerHouseFunnel() {
     setSubmitError(null);
   };
 
-  const progressPercent = Math.min(100, Math.round(((currentStep - 1) / 4) * 100));
-
   return (
-    <div className="relative z-10 w-full max-w-xl mx-auto px-4 py-6 sm:py-10">
-      {/* Floating Card Container with Crisp Border & Shadow */}
-      <div className="relative bg-white rounded-3xl p-6 sm:p-10 md:p-11 shadow-card border border-slate-200">
-        {/* Top Progress Bar (Visible during active form steps 2-5) */}
-        {currentStep > 1 && currentStep < 6 && (
-          <div className="absolute top-0 left-0 right-0 h-1.5 bg-slate-100 rounded-t-3xl overflow-hidden">
-            <div
-              className="h-full bg-[#8B1122] transition-all duration-300 ease-out"
-              style={{ width: `${progressPercent}%` }}
-            />
-          </div>
-        )}
-
+    <div className="relative z-10 w-full max-w-[560px] mx-auto px-4 py-8 sm:py-12">
+      {/* Clean White Rounded Card Container */}
+      <div className="relative bg-white rounded-[28px] p-7 sm:p-11 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.08)] border border-slate-100">
         {submitError && (
-          <div className="mb-4 p-3.5 rounded-xl bg-rose-50 border border-rose-300 text-rose-800 text-xs font-bold text-center animate-fade-in">
+          <div className="mb-4 p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-semibold text-center animate-fade-in">
             {submitError}
           </div>
         )}
 
-        {/* Step Views */}
+        {/* Step 1: Zip */}
         {currentStep === 1 && (
           <Step1ZipHook onSuccess={handleStep1Success} initialZip={formData.zipCode} />
         )}
 
+        {/* Step 2: Replace vs Repair */}
         {currentStep === 2 && (
           <Step2ProjectScope
             onBack={() => setCurrentStep(1)}
@@ -165,6 +176,7 @@ export function HammerHouseFunnel() {
           />
         )}
 
+        {/* Step 3: Searching... */}
         {currentStep === 3 && (
           <Step3SearchingMatcher
             city={formData.city}
@@ -173,31 +185,43 @@ export function HammerHouseFunnel() {
           />
         )}
 
+        {/* Step 4: Name */}
         {currentStep === 4 && (
-          <Step4NameAddress
-            city={formData.city}
-            zipCode={formData.zipCode}
-            initialFullName={formData.fullName}
-            initialAddress={formData.streetAddress}
-            initialIsHomeowner={formData.isHomeowner}
+          <Step4Name
+            initialFirstName={formData.firstName}
+            initialLastName={formData.lastName}
             onBack={() => setCurrentStep(2)}
             onNext={handleStep4Next}
           />
         )}
 
+        {/* Step 5: Street Address & Homeowner */}
         {currentStep === 5 && (
-          <Step5ContactTcpa
+          <Step5Address
+            city={formData.city}
+            zipCode={formData.zipCode}
+            initialAddress={formData.streetAddress}
+            initialIsHomeowner={formData.isHomeowner}
+            onBack={() => setCurrentStep(4)}
+            onNext={handleStep5Next}
+          />
+        )}
+
+        {/* Step 6: Email & Phone */}
+        {currentStep === 6 && (
+          <Step6Contact
             city={formData.city}
             initialEmail={formData.email}
             initialPhone={formData.phone}
             isSubmitting={isSubmitting}
-            onBack={() => setCurrentStep(4)}
-            onSubmit={handleStep5Submit}
+            onBack={() => setCurrentStep(5)}
+            onSubmit={handleStep6Submit}
           />
         )}
 
-        {currentStep === 6 && (
-          <Step6Confirmation
+        {/* Step 7: Confirmation & Project Details */}
+        {currentStep === 7 && (
+          <Step7Confirmation
             leadData={{
               leadCode: formData.leadCode || 'HH-FL-89210',
               fullName: formData.fullName,
@@ -214,18 +238,13 @@ export function HammerHouseFunnel() {
         )}
       </div>
 
-      {/* Footer */}
-      <footer className="mt-8 text-center text-xs font-medium text-[#1E293B] space-y-2">
-        <div className="flex items-center justify-center gap-4 font-semibold">
-          <a href="#privacy" className="hover:text-[#8B1122] transition-colors">Privacy Policy</a>
-          <span>•</span>
-          <a href="#terms" className="hover:text-[#8B1122] transition-colors">Terms of Service</a>
-          <span>•</span>
-          <a href="#pro" className="hover:text-[#8B1122] transition-colors">I'm a Florida Pro</a>
+      {/* Global Footer Links */}
+      <footer className="mt-8 text-center text-xs text-[#64748B] space-y-2">
+        <div className="flex items-center justify-center gap-4 font-normal">
+          <a href="#privacy" className="hover:underline">Privacy Policy</a>
+          <span>Terms of Service</span>
+          <span>I'm a Pro</span>
         </div>
-        <p className="text-[11px] text-[#334155] font-normal">
-          © {new Date().getFullYear()} Hammer House. All Rights Reserved. Licensed Florida Roofing Appointment Network.
-        </p>
       </footer>
     </div>
   );
