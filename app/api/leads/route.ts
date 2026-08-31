@@ -6,7 +6,9 @@ import { checkRateLimit } from '@/lib/rate-limit';
 
 export async function POST(req: NextRequest) {
   try {
-    const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || req.ip || '127.0.0.1';
+    const forwarded = req.headers.get('x-forwarded-for');
+    const realIp = req.headers.get('x-real-ip');
+    const ip = forwarded ? forwarded.split(',')[0].trim() : realIp || '127.0.0.1';
     const userAgent = req.headers.get('user-agent') || 'Unknown';
 
     // 1. IP Rate Limiting Check
@@ -33,7 +35,6 @@ export async function POST(req: NextRequest) {
     const leadCode = `HH-FL-${randomSuffix}`;
 
     // 3. Save to Database (Prisma / PostgreSQL on Railway)
-    let dbRecordCreated = false;
     try {
       await db.lead.create({
         data: {
@@ -55,7 +56,6 @@ export async function POST(req: NextRequest) {
           status: 'PENDING',
         },
       });
-      dbRecordCreated = true;
     } catch (dbError) {
       // Log DB error without crashing the user's booking experience
       console.error('[Database Storage Warning]', dbError);
