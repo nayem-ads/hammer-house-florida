@@ -1,5 +1,6 @@
 import React from 'react';
 import { HammerHouseLogo } from '../Logo';
+import { CheckCircle, Check, Copy } from 'lucide-react';
 
 interface Step7Props {
   leadData: {
@@ -17,78 +18,94 @@ interface Step7Props {
 }
 
 export function Step7Confirmation({ leadData, onReset }: Step7Props) {
+  const [copied, setCopied] = React.useState(false);
+
+  const handleCopyCode = () => {
+    navigator.clipboard.writeText(leadData.leadCode);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
   return (
-    <div className="space-y-8 animate-fade-in text-left max-w-md mx-auto">
+    <div className="space-y-6 sm:space-y-7 animate-fade-in text-left max-w-md mx-auto">
       {/* Brand Header */}
-      <div className="text-center">
+      <div className="text-center space-y-3">
         <HammerHouseLogo size="md" align="center" />
+        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold">
+          <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0" />
+          <span>Estimate Request Confirmed</span>
+        </div>
       </div>
 
       {/* What Happens Next Section */}
-      <div className="space-y-4">
-        <h2 className="font-sans text-2xl font-bold text-[#1E3944] text-center tracking-tight">
+      <div className="space-y-3 bg-[#F8FAFC] p-5 rounded-2xl border border-slate-200">
+        <h2 className="font-sans text-xl font-bold text-[#0F172A]">
           What Happens Next:
         </h2>
 
-        <ul className="space-y-3 text-sm text-[#334155] leading-relaxed list-disc list-outside pl-5">
+        <ul className="space-y-3 text-xs sm:text-sm text-[#475569] leading-relaxed list-disc list-outside pl-4">
           <li>
-            You <strong>MAY</strong> receive calls and/or text messages to confirm your scheduled appointments.
+            You <strong className="text-[#0F172A]">MAY</strong> receive calls and/or text messages to confirm your scheduled appointments.
           </li>
           <li>
-            During your appointment, each estimator will take measurements, review your options, and show you samples so you can see what works best for your home. If you like what you see, they will provide you with an exact price that’s <strong>guaranteed for one full year</strong>. No pressure, just clear options and pricing when you’re ready.
+            During your appointment, each estimator will take measurements, review your options, and show you samples so you can see what works best for your home. If you like what you see, they will provide you with an exact price that's <strong className="text-[#0F172A]">guaranteed for one full year</strong>. No pressure, just clear options and pricing when you're ready.
           </li>
         </ul>
       </div>
 
-      {/* Your Project Details Section */}
-      <div className="space-y-4 pt-2">
-        <h3 className="font-sans text-2xl font-bold text-[#1E3944] text-center tracking-tight">
-          Your Project Details:
-        </h3>
+      {/* Project Details Section */}
+      <div className="space-y-3 pt-1">
+        <div className="flex items-center justify-between">
+          <h3 className="font-sans text-lg font-bold text-[#0F172A]">
+            Your Project Details:
+          </h3>
+          <button
+            type="button"
+            onClick={handleCopyCode}
+            className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-white hover:bg-slate-50 text-xs font-bold text-[#0F172A] transition-colors cursor-pointer border border-slate-200 shadow-sm"
+            title="Copy Reference Code"
+          >
+            {copied ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5 text-slate-400" />}
+            <span>Ref: {leadData.leadCode}</span>
+          </button>
+        </div>
 
-        <div className="space-y-4 text-left pt-2">
+        <div className="space-y-3 divide-y divide-slate-100 text-sm bg-white p-4.5 rounded-2xl border border-slate-200 shadow-sm">
           <div>
-            <p className="text-sm font-normal text-[#334155]">Request:</p>
-            <p className="text-lg font-bold text-[#0D9488]">
-              Free Roofing Estimate
+            <p className="text-xs font-bold uppercase tracking-wider text-[#64748B]">Request:</p>
+            <p className="text-base font-bold text-[#0D9488]">
+              Free Roofing Estimate ({leadData.serviceType === 'Replacement' ? 'Full Replacement' : 'Roof Repair'})
             </p>
           </div>
 
-          <div>
-            <p className="text-sm font-normal text-[#334155]">Homeowner/Decision Maker:</p>
-            <p className="text-lg font-bold text-[#0D9488]">
+          <div className="pt-2.5">
+            <p className="text-xs font-bold uppercase tracking-wider text-[#64748B]">Homeowner / Decision Maker:</p>
+            <p className="text-base font-bold text-[#0D9488]">
               {leadData.fullName}
             </p>
           </div>
 
-          <div>
-            <p className="text-sm font-normal text-[#334155]">Home Address:</p>
-            <p className="text-lg font-bold text-[#0D9488]">
-              {leadData.streetAddress}
+          <div className="pt-2.5">
+            <p className="text-xs font-bold uppercase tracking-wider text-[#64748B]">Property Address:</p>
+            <p className="text-base font-bold text-[#0D9488]">
+              {leadData.streetAddress}, {leadData.city}, {leadData.state} {leadData.zipCode}
             </p>
           </div>
 
-          <div>
-            <p className="text-sm font-normal text-[#334155]">Phone Number:</p>
-            <p className="text-lg font-bold text-[#0D9488]">
-              {leadData.phone}
-            </p>
-          </div>
-
-          <div>
-            <p className="text-sm font-normal text-[#334155]">Email Address:</p>
-            <p className="text-lg font-bold text-[#0D9488]">
-              {leadData.email}
+          <div className="pt-2.5">
+            <p className="text-xs font-bold uppercase tracking-wider text-[#64748B]">Phone & Email:</p>
+            <p className="text-base font-bold text-[#0D9488]">
+              {leadData.phone} • {leadData.email}
             </p>
           </div>
         </div>
       </div>
 
-      <div className="pt-4 text-center">
+      <div className="pt-2 text-center">
         <button
           type="button"
           onClick={onReset}
-          className="text-xs font-semibold text-[#64748B] hover:text-[#0D9488] transition-colors underline cursor-pointer"
+          className="text-xs font-medium text-[#64748B] hover:text-[#8B1122] transition-colors underline cursor-pointer"
         >
           Submit another project location
         </button>

@@ -154,7 +154,7 @@ export function HammerHouseFunnel() {
   return (
     <div className="relative z-10 w-full max-w-[560px] mx-auto px-4 py-8 sm:py-12">
       {/* Clean White Rounded Card Container */}
-      <div className="relative bg-white rounded-[28px] p-7 sm:p-11 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.08)] border border-slate-100">
+      <div className="relative bg-white rounded-[28px] p-7 sm:p-11 shadow-[0_20px_50px_-12px_rgba(15,23,42,0.08)] border border-slate-100">
         {submitError && (
           <div className="mb-4 p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-semibold text-center animate-fade-in">
             {submitError}

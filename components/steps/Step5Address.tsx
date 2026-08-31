@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { HammerHouseLogo } from '../Logo';
-import { ArrowLeft, Check, Home } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Check } from 'lucide-react';
 
 interface Step5Props {
   city: string;
@@ -12,6 +12,8 @@ interface Step5Props {
 }
 
 export function Step5Address({
+  city,
+  zipCode,
   initialAddress = '',
   initialIsHomeowner = true,
   onBack,
@@ -92,24 +94,19 @@ export function Step5Address({
   };
 
   return (
-    <div className="space-y-6 sm:space-y-7 animate-fade-in text-center">
+    <div className="animate-fade-in text-center">
       {/* Brand Header */}
       <HammerHouseLogo size="md" align="center" />
 
       {/* Headline */}
-      <div className="space-y-2 pt-1 max-w-sm mx-auto">
-        <h2 className="font-sans text-2xl sm:text-[28px] font-black text-[#0F172A] tracking-[-0.03em] leading-tight">
-          What is your street address?
-        </h2>
-      </div>
+      <h2 className="mt-8 mb-6 font-sans text-[24px] sm:text-[28px] font-bold text-[#0F172A] leading-snug">
+        What is your street address?
+      </h2>
 
       {/* Form */}
-      <form onSubmit={handleSubmit} className="space-y-5 max-w-sm mx-auto text-left">
+      <form onSubmit={handleSubmit} className="max-w-sm mx-auto space-y-5 text-left">
         {/* Street Address Input with Dropdown */}
         <div className="relative" ref={dropdownRef}>
-          <div className="absolute inset-y-0 left-0 pl-4.5 flex items-center pointer-events-none text-slate-400">
-            <Home className="w-5 h-5 text-slate-400" />
-          </div>
           <input
             type="text"
             value={address}
@@ -122,22 +119,22 @@ export function Step5Address({
             }}
             onKeyDown={handleKeyDown}
             placeholder="Street Address"
-            className="w-full h-15 pl-12 pr-4 text-base font-semibold text-[#0F172A] bg-white border-2 border-slate-200 rounded-2xl focus:border-[#8B1122] focus:ring-4 focus:ring-[#8B1122]/15 transition-all outline-none placeholder:text-slate-400 shadow-sm"
+            className="w-full h-[52px] text-center text-base text-[#0F172A] bg-white border border-[#CBD5E1] rounded-xl focus:border-[#8B1122] focus:ring-2 focus:ring-[#8B1122]/10 transition-all outline-none placeholder:text-[#94A3B8]"
             autoFocus
           />
 
           {/* Autocomplete Dropdown */}
           {showDropdown && suggestions.length > 0 && (
-            <div className="absolute z-30 left-0 right-0 top-full mt-1 bg-white border-2 border-slate-200 rounded-2xl shadow-xl overflow-hidden animate-fade-in divide-y divide-slate-100 max-h-56 overflow-y-auto">
+            <div className="absolute z-30 left-0 right-0 top-full mt-1 bg-white border border-[#CBD5E1] rounded-xl shadow-lg overflow-hidden animate-fade-in divide-y divide-slate-100 max-h-56 overflow-y-auto">
               {suggestions.map((item, idx) => (
                 <button
                   key={idx}
                   type="button"
                   onClick={() => handleSelectSuggestion(item)}
                   onMouseEnter={() => setHighlightedIndex(idx)}
-                  className={`w-full text-left px-4 py-3 text-sm font-semibold transition-colors cursor-pointer ${
+                  className={`w-full text-left px-4 py-2.5 text-sm font-semibold transition-colors cursor-pointer ${
                     highlightedIndex === idx
-                      ? 'bg-[#0284C7] text-white font-bold'
+                      ? 'bg-[#8B1122] text-white font-bold'
                       : 'hover:bg-slate-100 text-[#0F172A]'
                   }`}
                 >
@@ -149,7 +146,7 @@ export function Step5Address({
         </div>
 
         {/* I'm the Home Owner Checkbox */}
-        <div className="flex items-center justify-center pt-1">
+        <div className="flex items-center justify-center pt-1 pb-1">
           <label className="inline-flex items-center gap-3 cursor-pointer select-none">
             <input
               type="checkbox"
@@ -161,42 +158,43 @@ export function Step5Address({
               className="sr-only"
             />
             <div
-              className={`w-7 h-7 rounded-lg border-2 flex items-center justify-center transition-all ${
+              className={`w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-all ${
                 isHomeowner
                   ? 'border-[#8B1122] bg-[#8B1122] text-white shadow-sm'
                   : 'border-slate-300 bg-white'
               }`}
             >
-              {isHomeowner && <Check className="w-4.5 h-4.5 stroke-[3] text-white" />}
+              {isHomeowner && <Check className="w-4 h-4 stroke-[3] text-white" />}
             </div>
-            <span className="text-base font-bold text-[#0F172A]">
+            <span className="text-sm sm:text-base font-semibold text-[#0F172A]">
               I'm the Home Owner
             </span>
           </label>
         </div>
 
         {error && (
-          <p className="text-xs font-bold text-rose-600 text-center animate-fade-in">
+          <p className="text-xs font-medium text-rose-600 text-center animate-fade-in">
             {error}
           </p>
         )}
 
         {/* Symmetrical Bottom Controls */}
-        <div className="flex items-center justify-center gap-4 pt-2">
+        <div className="flex items-center gap-4 pt-2">
           <button
             type="button"
             onClick={onBack}
-            className="w-13 h-13 rounded-2xl border-2 border-slate-300 text-slate-600 hover:text-[#0F172A] hover:border-[#0F172A] transition-colors flex items-center justify-center cursor-pointer shadow-sm shrink-0"
+            className="w-11 h-11 rounded-full border border-[#CBD5E1] text-[#94A3B8] hover:text-[#0F172A] hover:border-[#0F172A] transition-colors flex items-center justify-center cursor-pointer shrink-0"
             aria-label="Go back"
           >
-            <ArrowLeft className="w-5 h-5" />
+            <ArrowLeft className="w-4.5 h-4.5" />
           </button>
 
           <button
             type="submit"
-            className="flex-1 h-13 bg-[#8B1122] hover:bg-[#730C1A] active:scale-[0.98] text-white font-sans font-extrabold text-base tracking-wider rounded-2xl shadow-btn transition-all flex items-center justify-center cursor-pointer"
+            className="flex-1 h-[52px] bg-[#8B1122] hover:bg-[#730C1A] active:scale-[0.98] text-white font-sans font-bold text-[15px] tracking-wide rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer"
           >
-            NEXT
+            <span>NEXT</span>
+            <ArrowRight className="w-4.5 h-4.5" />
           </button>
         </div>
       </form>
