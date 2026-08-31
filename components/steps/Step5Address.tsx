@@ -12,6 +12,8 @@ interface Step5Props {
 }
 
 export function Step5Address({
+  city,
+  zipCode,
   initialAddress = '',
   initialIsHomeowner = true,
   onBack,
@@ -97,10 +99,13 @@ export function Step5Address({
       <HammerHouseLogo size="md" align="center" />
 
       {/* Headline */}
-      <div className="space-y-2 pt-1 max-w-sm mx-auto">
+      <div className="space-y-1.5 pt-1 max-w-sm mx-auto">
         <h2 className="font-sans text-2xl sm:text-[28px] font-black text-[#0F172A] tracking-[-0.03em] leading-tight">
-          What is your street address?
+          What is the project address?
         </h2>
+        <p className="text-sm font-medium text-[#475569]">
+          Needed to verify satellite roof pitch in <strong className="text-[#0F172A]">{city}, FL</strong>
+        </p>
       </div>
 
       {/* Form */}
@@ -121,7 +126,7 @@ export function Step5Address({
               if (suggestions.length > 0) setShowDropdown(true);
             }}
             onKeyDown={handleKeyDown}
-            placeholder="Street Address"
+            placeholder="Start typing street address..."
             className="w-full h-15 pl-12 pr-4 text-base font-semibold text-[#0F172A] bg-white border-2 border-slate-200 rounded-2xl focus:border-[#8B1122] focus:ring-4 focus:ring-[#8B1122]/15 transition-all outline-none placeholder:text-slate-400 shadow-sm"
             autoFocus
           />
@@ -170,7 +175,7 @@ export function Step5Address({
               {isHomeowner && <Check className="w-4.5 h-4.5 stroke-[3] text-white" />}
             </div>
             <span className="text-base font-bold text-[#0F172A]">
-              I'm the Home Owner
+              I am the homeowner or decision-maker
             </span>
           </label>
         </div>

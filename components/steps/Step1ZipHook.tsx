@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { HammerHouseLogo } from '../Logo';
 import { TopTrustBadges } from '../ui/TopTrustBadges';
 import { isFloridaZip, lookupFloridaZip } from '@/lib/florida-zips';
-import { ArrowRight, MapPin, AlertCircle, ArrowLeft, ShieldCheck, Wind, Zap } from 'lucide-react';
+import { ArrowRight, MapPin, AlertCircle, ArrowLeft, ShieldCheck, Wind, Zap, Sparkles } from 'lucide-react';
 
 interface Step1Props {
   onSuccess: (data: { zipCode: string; city: string; state: string; county: string }) => void;
@@ -24,7 +24,7 @@ export function Step1ZipHook({ onSuccess, initialZip = '' }: Step1Props) {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (zip.length !== 5) {
-      setError('Please enter a valid 5-digit zip code.');
+      setError('Please enter a complete 5-digit zip code.');
       return;
     }
 
@@ -33,7 +33,7 @@ export function Step1ZipHook({ onSuccess, initialZip = '' }: Step1Props) {
     if (!isFloridaZip(zip)) {
       setIsSubmitting(false);
       setIsOutOfStateMode(true);
-      setError('We currently serve Florida properties. Please enter a valid Florida zip code.');
+      setError('Hammer House currently specializes in Florida homes. Please enter a valid Florida zip code.');
       return;
     }
 
@@ -58,15 +58,15 @@ export function Step1ZipHook({ onSuccess, initialZip = '' }: Step1Props) {
         <HammerHouseLogo size="md" align="center" />
 
         <div className="space-y-2 pt-1 max-w-md mx-auto">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 border border-amber-300 text-amber-900 text-xs font-bold mb-2">
-            <AlertCircle className="w-3.5 h-3.5" />
+          <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-amber-50 border border-amber-300 text-amber-900 text-xs font-extrabold mb-2">
+            <AlertCircle className="w-4 h-4" />
             <span>Florida Properties Only</span>
           </div>
-          <h1 className="font-sans text-2xl sm:text-[26px] font-black text-[#0F172A] tracking-[-0.03em] leading-tight">
-            Looks like we're unable to find that zipcode. What's the property's zipcode?
+          <h1 className="font-sans text-2xl sm:text-[28px] font-black text-[#0F172A] tracking-[-0.03em] leading-tight">
+            We specialize in Florida roofs. What is the property's Florida zip code?
           </h1>
           <p className="text-sm font-medium text-[#475569]">
-            Please enter a 5-digit Florida zip code (32004 - 34997)
+            Enter a 5-digit Florida zip code (32004 - 34997)
           </p>
         </div>
 
@@ -83,7 +83,7 @@ export function Step1ZipHook({ onSuccess, initialZip = '' }: Step1Props) {
                 maxLength={5}
                 value={zip}
                 onChange={handleZipChange}
-                placeholder="Zip Code"
+                placeholder="Enter 5-Digit Florida Zip"
                 className="w-full h-15 pl-12 pr-4 text-center text-lg font-bold text-[#0F172A] bg-white border-2 border-slate-200 rounded-2xl focus:border-[#8B1122] focus:ring-4 focus:ring-[#8B1122]/15 transition-all outline-none placeholder:text-slate-400 shadow-sm"
                 autoFocus
               />
@@ -100,7 +100,7 @@ export function Step1ZipHook({ onSuccess, initialZip = '' }: Step1Props) {
             disabled={isSubmitting || zip.length < 5}
             className="w-full h-15 bg-[#8B1122] hover:bg-[#730C1A] active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none text-white font-sans font-extrabold text-base tracking-wider rounded-2xl shadow-btn transition-all flex items-center justify-center cursor-pointer"
           >
-            GET RESULTS
+            GET LOCAL PRICING
           </button>
 
           <button
@@ -112,7 +112,7 @@ export function Step1ZipHook({ onSuccess, initialZip = '' }: Step1Props) {
             className="w-full flex items-center justify-center gap-1.5 text-xs font-bold text-[#475569] hover:text-[#0F172A] transition-colors pt-1 cursor-pointer"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
-            <span>Go back to start</span>
+            <span>Go back to home</span>
           </button>
         </form>
       </div>
@@ -127,11 +127,11 @@ export function Step1ZipHook({ onSuccess, initialZip = '' }: Step1Props) {
         <TopTrustBadges />
 
         <div className="space-y-2 pt-1">
-          <h1 className="font-sans text-[26px] sm:text-[32px] font-black text-[#0F172A] tracking-[-0.03em] leading-[1.2]">
-            Let's find you local Florida Roofing Pros
+          <h1 className="font-sans text-[26px] sm:text-[32px] font-black text-[#0F172A] tracking-[-0.03em] leading-[1.18]">
+            Protect Your Home & Lower Your Florida Insurance with a Certified Roof.
           </h1>
-          <p className="text-sm sm:text-base font-medium text-[#475569]">
-            Enter the location of your project
+          <p className="text-sm sm:text-base font-medium text-[#475569] max-w-lg mx-auto leading-normal">
+            Skip the endless calls. Compare free quotes from Florida DBPR-licensed pros in 60 seconds.
           </p>
         </div>
       </div>
@@ -150,7 +150,7 @@ export function Step1ZipHook({ onSuccess, initialZip = '' }: Step1Props) {
               maxLength={5}
               value={zip}
               onChange={handleZipChange}
-              placeholder="Zip Code"
+              placeholder="Enter Florida Zip Code (e.g. 33101)"
               className="w-full h-15 pl-12 pr-4 text-center text-lg font-bold text-[#0F172A] bg-white border-2 border-slate-200 rounded-2xl focus:border-[#8B1122] focus:ring-4 focus:ring-[#8B1122]/15 transition-all outline-none placeholder:text-slate-400 shadow-sm"
               autoFocus
             />
@@ -167,9 +167,14 @@ export function Step1ZipHook({ onSuccess, initialZip = '' }: Step1Props) {
           disabled={isSubmitting || zip.length < 5}
           className="w-full h-15 bg-[#8B1122] hover:bg-[#730C1A] active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none text-white font-sans font-extrabold text-base tracking-wider rounded-2xl shadow-btn transition-all flex items-center justify-center gap-2 group cursor-pointer"
         >
-          <span>NEXT</span>
+          <span>CHECK LOCAL PRICING & PROS</span>
           <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
         </button>
+
+        <p className="text-xs font-bold text-[#0F172A] text-center tracking-tight flex items-center justify-center gap-1.5 pt-0.5">
+          <Sparkles className="w-4 h-4 text-amber-500 fill-amber-400" />
+          <span>100% Free & No Obligation • Instant Local Contractor Matching</span>
+        </p>
       </form>
 
       {/* High-Trust Florida Credentials Strip */}

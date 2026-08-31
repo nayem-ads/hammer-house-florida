@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { HammerHouseLogo } from '../Logo';
 import { formatPhoneNumber, isValidUSPhone } from '@/lib/validations';
-import { ArrowLeft, Check, Loader2, Mail, Phone, Lock } from 'lucide-react';
+import { ArrowLeft, Check, Loader2, Mail, Phone, Lock, Sparkles } from 'lucide-react';
 
 interface Step6Props {
   city: string;
@@ -62,18 +62,18 @@ export function Step6Contact({
       {/* Brand Header */}
       <HammerHouseLogo size="md" align="center" />
 
-      {/* Green Circular Checkmark Icon */}
-      <div className="w-14 h-14 rounded-full bg-[#10B981] text-white flex items-center justify-center mx-auto shadow-md">
+      {/* Green Shield Check Icon */}
+      <div className="w-14 h-14 rounded-2xl bg-emerald-50 border-2 border-emerald-500 text-emerald-600 flex items-center justify-center mx-auto shadow-sm">
         <Check className="w-8 h-8 stroke-[3]" />
       </div>
 
       {/* Headlines */}
       <div className="space-y-1.5 pt-1 max-w-sm mx-auto">
         <h2 className="font-sans text-2xl sm:text-[28px] font-black text-[#0F172A] tracking-[-0.03em] leading-tight">
-          We have matching Pros in {city}, FL!
+          Your Estimates Are Ready in {city}, FL!
         </h2>
         <p className="text-sm sm:text-base font-medium text-[#475569]">
-          Where should we send your matches?
+          Where should we send your certified contractor matches?
         </p>
       </div>
 
@@ -88,7 +88,7 @@ export function Step6Contact({
               type="email"
               value={email}
               onChange={handleEmailChange}
-              placeholder="Email address"
+              placeholder="Email address (for quote breakdown)"
               className="w-full h-15 pl-12 pr-4 text-base font-semibold text-[#0F172A] bg-white border-2 border-slate-200 rounded-2xl focus:border-[#8B1122] focus:ring-4 focus:ring-[#8B1122]/15 transition-all outline-none placeholder:text-slate-400 shadow-sm"
               autoFocus
             />
@@ -103,7 +103,7 @@ export function Step6Contact({
               inputMode="tel"
               value={phone}
               onChange={handlePhoneChange}
-              placeholder="Cell Number"
+              placeholder="Cell Number (for instant confirmation)"
               className="w-full h-15 pl-12 pr-4 text-base font-semibold text-[#0F172A] bg-white border-2 border-slate-200 rounded-2xl focus:border-[#8B1122] focus:ring-4 focus:ring-[#8B1122]/15 transition-all outline-none placeholder:text-slate-400 shadow-sm"
             />
           </div>
@@ -112,12 +112,12 @@ export function Step6Contact({
         {/* Micro-Trust Note */}
         <div className="flex items-center justify-center gap-1.5 text-xs font-semibold text-[#475569] pt-1">
           <Lock className="w-3.5 h-3.5 text-[#8B1122]" />
-          <span>Zero-spam guarantee. Your information is encrypted.</span>
+          <span>Zero spam guarantee. Your details are safe & confidential.</span>
         </div>
 
         {/* Legal Disclaimer */}
         <p className="text-[11px] text-[#475569] font-medium leading-relaxed text-center pt-1 px-1">
-          By clicking “Get Results,” I am providing my electronic signature and expressed written consent to permit <strong>Hammer House</strong> and up to <strong>four home improvement companies</strong> to contact me at the number provided for marketing purposes, including the use of automated technology and text messages. I acknowledge my consent is not required to obtain any good or service.{' '}
+          By clicking “Get My Free Estimates,” I provide express written consent to permit <strong>Hammer House</strong> and up to <strong>three Florida DBPR-certified roofing contractors</strong> to contact me at the number provided regarding quotes & appointments via call/text. Consent is not a condition of purchase.{' '}
           <a href="#terms" className="underline hover:text-[#0F172A] font-bold">Terms of Service</a> and <a href="#privacy" className="underline hover:text-[#0F172A] font-bold">Privacy Policy</a>
         </p>
 
@@ -147,7 +147,7 @@ export function Step6Contact({
             {isSubmitting ? (
               <Loader2 className="w-6 h-6 animate-spin text-white" />
             ) : (
-              <span>GET RESULTS</span>
+              <span>GET MY FREE ESTIMATES</span>
             )}
           </button>
         </div>

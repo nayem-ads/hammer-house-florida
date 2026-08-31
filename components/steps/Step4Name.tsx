@@ -40,10 +40,13 @@ export function Step4Name({
       <HammerHouseLogo size="md" align="center" />
 
       {/* Headline */}
-      <div className="space-y-2 pt-1 max-w-sm mx-auto">
+      <div className="space-y-1.5 pt-1 max-w-sm mx-auto">
         <h2 className="font-sans text-2xl sm:text-[28px] font-black text-[#0F172A] tracking-[-0.03em] leading-tight">
-          Please enter your full name
+          Who should we prepare this estimate for?
         </h2>
+        <p className="text-sm font-medium text-[#475569]">
+          We'll customize your contractor comparison report
+        </p>
       </div>
 
       {/* Form Fields */}
@@ -85,7 +88,7 @@ export function Step4Name({
 
         {/* Bell Notification Banner */}
         <div className="bg-[#F8FAFC] border border-slate-200/80 rounded-2xl p-4 flex items-center justify-center gap-3.5 shadow-sm">
-          <Bell className="w-6 h-6 text-[#8B1122] shrink-0" />
+          <Bell className="w-6 h-6 text-[#8B1122] shrink-0 animate-pulse" />
           <span className="font-bold text-sm sm:text-base text-[#0F172A]">
             Your matches are almost ready!
           </span>
@@ -112,7 +115,7 @@ export function Step4Name({
             type="submit"
             className="flex-1 h-13 bg-[#8B1122] hover:bg-[#730C1A] active:scale-[0.98] text-white font-sans font-extrabold text-base tracking-wider rounded-2xl shadow-btn transition-all flex items-center justify-center cursor-pointer"
           >
-            NEXT
+            CONTINUE
           </button>
         </div>
       </form>
