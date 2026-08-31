@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { HammerHouseLogo } from '../Logo';
 import { formatPhoneNumber, isValidUSPhone } from '@/lib/validations';
-import { ArrowLeft, Loader2 } from 'lucide-react';
+import { ArrowLeft, Check, Loader2, Mail, Phone, Lock } from 'lucide-react';
 
 interface Step6Props {
   city: string;
@@ -12,77 +12,143 @@ interface Step6Props {
   onSubmit: (data: { email: string; phone: string; tcpaConsent: boolean }) => void;
 }
 
-export function Step6Contact({ city, initialEmail = '', initialPhone = '', isSubmitting, onBack, onSubmit }: Step6Props) {
+export function Step6Contact({
+  city,
+  initialEmail = '',
+  initialPhone = '',
+  isSubmitting,
+  onBack,
+  onSubmit,
+}: Step6Props) {
   const [email, setEmail] = useState(initialEmail);
   const [phone, setPhone] = useState(initialPhone);
   const [error, setError] = useState<string | null>(null);
 
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPhone(formatPhoneNumber(e.target.value));
+    const formatted = formatPhoneNumber(e.target.value);
+    setPhone(formatted);
+    if (error) setError(null);
+  };
+
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEmail(e.target.value);
     if (error) setError(null);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const cleanEmail = email.trim().toLowerCase();
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleanEmail)) { setError('Please enter a valid email address.'); return; }
-    if (!isValidUSPhone(phone)) { setError('Please enter a valid 10-digit phone number.'); return; }
-    onSubmit({ email: cleanEmail, phone, tcpaConsent: true });
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailRegex.test(cleanEmail)) {
+      setError('Please enter a valid email address.');
+      return;
+    }
+
+    if (!isValidUSPhone(phone)) {
+      setError('Please enter a valid 10-digit phone number.');
+      return;
+    }
+
+    onSubmit({
+      email: cleanEmail,
+      phone,
+      tcpaConsent: true,
+    });
   };
 
   return (
-    <div className="text-center animate-fade-in">
+    <div className="space-y-6 sm:space-y-7 animate-fade-in text-center">
+      {/* Brand Header */}
       <HammerHouseLogo size="md" align="center" />
 
-      {/* Green checkmark circle */}
-      <div className="w-14 h-14 rounded-full bg-[#22C55E] text-white flex items-center justify-center mx-auto mt-8 mb-4">
-        <svg className="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-          <polyline points="20 6 9 17 4 12" />
-        </svg>
+      {/* Green Circular Checkmark Icon */}
+      <div className="w-14 h-14 rounded-full bg-[#10B981] text-white flex items-center justify-center mx-auto shadow-md">
+        <Check className="w-8 h-8 stroke-[3]" />
       </div>
 
-      <h2 className="mb-2 text-[24px] sm:text-[28px] font-bold text-[#1E3A3A] leading-tight italic">
-        We have matching Pros in {city}, FL!
-      </h2>
+      {/* Headlines */}
+      <div className="space-y-1.5 pt-1 max-w-sm mx-auto">
+        <h2 className="font-sans text-2xl sm:text-[28px] font-black text-[#0F172A] tracking-[-0.03em] leading-tight">
+          We have matching Pros in {city}, FL!
+        </h2>
+        <p className="text-sm sm:text-base font-medium text-[#475569]">
+          Where should we send your matches?
+        </p>
+      </div>
 
-      <p className="text-base font-normal text-[#6B7F7F] mb-8">
-        Where should we send your matches?
-      </p>
+      {/* Form Fields */}
+      <form onSubmit={handleSubmit} className="space-y-4 max-w-sm mx-auto text-left">
+        <div className="space-y-3">
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 pl-4.5 flex items-center pointer-events-none text-slate-400">
+              <Mail className="w-5 h-5 text-slate-400" />
+            </div>
+            <input
+              type="email"
+              value={email}
+              onChange={handleEmailChange}
+              placeholder="Email address"
+              className="w-full h-15 pl-12 pr-4 text-base font-semibold text-[#0F172A] bg-white border-2 border-slate-200 rounded-2xl focus:border-[#8B1122] focus:ring-4 focus:ring-[#8B1122]/15 transition-all outline-none placeholder:text-slate-400 shadow-sm"
+              autoFocus
+            />
+          </div>
 
-      <form onSubmit={handleSubmit} className="max-w-md mx-auto space-y-4">
-        <input
-          type="email"
-          value={email}
-          onChange={(e) => { setEmail(e.target.value); if (error) setError(null); }}
-          placeholder="Email"
-          className="w-full h-14 text-center text-base font-normal text-[#1E3A3A] bg-white border border-[#A3B8B0] rounded-xl focus:border-[#8B1122] focus:ring-2 focus:ring-[#8B1122]/10 transition-all outline-none placeholder:text-[#94A3B8]"
-          autoFocus
-        />
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 pl-4.5 flex items-center pointer-events-none text-slate-400">
+              <Phone className="w-5 h-5 text-slate-400" />
+            </div>
+            <input
+              type="tel"
+              inputMode="tel"
+              value={phone}
+              onChange={handlePhoneChange}
+              placeholder="Cell Number"
+              className="w-full h-15 pl-12 pr-4 text-base font-semibold text-[#0F172A] bg-white border-2 border-slate-200 rounded-2xl focus:border-[#8B1122] focus:ring-4 focus:ring-[#8B1122]/15 transition-all outline-none placeholder:text-slate-400 shadow-sm"
+            />
+          </div>
+        </div>
 
-        <input
-          type="tel"
-          inputMode="tel"
-          value={phone}
-          onChange={handlePhoneChange}
-          placeholder="Cell Number"
-          className="w-full h-14 text-center text-base font-normal text-[#1E3A3A] bg-white border border-[#A3B8B0] rounded-xl focus:border-[#8B1122] focus:ring-2 focus:ring-[#8B1122]/10 transition-all outline-none placeholder:text-[#94A3B8]"
-        />
+        {/* Micro-Trust Note */}
+        <div className="flex items-center justify-center gap-1.5 text-xs font-semibold text-[#475569] pt-1">
+          <Lock className="w-3.5 h-3.5 text-[#8B1122]" />
+          <span>Zero-spam guarantee. Your information is encrypted.</span>
+        </div>
 
-        {/* TCPA legal */}
-        <p className="text-[12px] text-[#6B7F7F] leading-relaxed text-center pt-2 px-2">
-          By clicking "Get Results," I am providing my electronic signature and expressed written consent to permit <strong className="text-[#1E3A3A]">Hammer House</strong> and <strong className="text-[#1E3A3A]">up to <u>four home improvement companies</u></strong> to contact me at the number provided for marketing purposes, including the use of automated technology and text messages. I acknowledge my consent is not required to obtain any good or service.{' '}
-          <a href="#terms" className="underline text-[#1E3A3A] hover:text-[#8B1122]">Terms of Service</a> and <a href="#privacy" className="underline text-[#1E3A3A] hover:text-[#8B1122]">Privacy Policy</a>
+        {/* Legal Disclaimer */}
+        <p className="text-[11px] text-[#475569] font-medium leading-relaxed text-center pt-1 px-1">
+          By clicking “Get Results,” I am providing my electronic signature and expressed written consent to permit <strong>Hammer House</strong> and up to <strong>four home improvement companies</strong> to contact me at the number provided for marketing purposes, including the use of automated technology and text messages. I acknowledge my consent is not required to obtain any good or service.{' '}
+          <a href="#terms" className="underline hover:text-[#0F172A] font-bold">Terms of Service</a> and <a href="#privacy" className="underline hover:text-[#0F172A] font-bold">Privacy Policy</a>
         </p>
 
-        {error && <p className="text-sm font-medium text-rose-600">{error}</p>}
+        {error && (
+          <p className="text-xs font-bold text-rose-600 text-center animate-fade-in">
+            {error}
+          </p>
+        )}
 
-        {/* Navigation */}
-        <div className="flex items-center gap-4 pt-6">
-          <button type="button" onClick={onBack} disabled={isSubmitting} className="w-12 h-12 rounded-full border border-[#A3B8B0] text-[#A3B8B0] hover:text-[#1E3A3A] hover:border-[#1E3A3A] transition-colors flex items-center justify-center cursor-pointer shrink-0 disabled:opacity-50">
+        {/* Symmetrical Bottom Controls */}
+        <div className="flex items-center justify-center gap-4 pt-2">
+          <button
+            type="button"
+            onClick={onBack}
+            disabled={isSubmitting}
+            className="w-13 h-13 rounded-2xl border-2 border-slate-300 text-slate-600 hover:text-[#0F172A] hover:border-[#0F172A] transition-colors flex items-center justify-center cursor-pointer shadow-sm shrink-0 disabled:opacity-50"
+            aria-label="Go back"
+          >
             <ArrowLeft className="w-5 h-5" />
           </button>
-          <button type="submit" disabled={isSubmitting} className="flex-1 h-14 bg-[#F5C882] hover:bg-[#EDB960] active:scale-[0.98] disabled:opacity-70 text-white font-sans font-bold text-base tracking-widest rounded-xl transition-all flex items-center justify-center cursor-pointer">
-            {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : 'GET RESULTS'}
+
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className="flex-1 h-13 bg-[#8B1122] hover:bg-[#730C1A] active:scale-[0.98] disabled:opacity-75 disabled:pointer-events-none text-white font-sans font-extrabold text-base tracking-wider rounded-2xl shadow-btn transition-all flex items-center justify-center cursor-pointer"
+          >
+            {isSubmitting ? (
+              <Loader2 className="w-6 h-6 animate-spin text-white" />
+            ) : (
+              <span>GET RESULTS</span>
+            )}
           </button>
         </div>
       </form>
