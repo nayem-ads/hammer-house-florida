@@ -1,0 +1,36 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Lead {
+  id            String   @id @default(cuid())
+  leadCode      String   @unique
+  zipCode       String
+  city          String
+  state         String   @default("FL")
+  serviceType   String
+  fullName      String
+  firstName     String
+  lastName      String
+  streetAddress String
+  isHomeowner   Boolean  @default(true)
+  phone         String
+  email         String
+  tcpaConsent   Boolean  @default(true)
+  ipAddress     String?
+  userAgent     String?
+  ghlSynced     Boolean  @default(false)
+  ghlResponse   String?
+  status        String   @default("PENDING") // PENDING, CONTACTED, SCHEDULED
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([zipCode])
+  @@index([phone])
+  @@index([createdAt])
+}
