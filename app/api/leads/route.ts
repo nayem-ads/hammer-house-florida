@@ -43,6 +43,7 @@ export async function POST(req: NextRequest) {
           city: data.city,
           state: data.state || 'FL',
           serviceType: data.serviceType,
+          roofAge: data.roofAge || 'Not sure',
           fullName: data.fullName,
           firstName,
           lastName,
@@ -57,7 +58,6 @@ export async function POST(req: NextRequest) {
         },
       });
     } catch (dbError) {
-      // Log DB error without crashing the user's booking experience
       console.error('[Database Storage Warning]', dbError);
     }
 
@@ -78,11 +78,13 @@ export async function POST(req: NextRequest) {
         'Hammer House',
         'Florida Lead',
         `Service: ${data.serviceType}`,
-        `County: ${data.city}`,
+        `Roof Age: ${data.roofAge || 'Not sure'}`,
+        `City: ${data.city}`,
         'Appointment Request',
       ],
       customFields: {
         service_type: data.serviceType,
+        roof_age: data.roofAge || 'Not sure',
         homeowner_confirmed: data.isHomeowner,
         tcpa_consent_granted: data.tcpaConsent,
         lead_source: 'Hammer House Florida Web Funnel',

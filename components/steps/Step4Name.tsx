@@ -3,34 +3,29 @@ import { HammerHouseLogo } from '../Logo';
 import { ArrowLeft, ArrowRight, Bell } from 'lucide-react';
 
 interface Step4Props {
-  initialFirstName?: string;
-  initialLastName?: string;
+  initialFullName?: string;
   onBack: () => void;
-  onNext: (data: { firstName: string; lastName: string; fullName: string }) => void;
+  onNext: (data: { fullName: string }) => void;
 }
 
 export function Step4Name({
-  initialFirstName = '',
-  initialLastName = '',
+  initialFullName = '',
   onBack,
   onNext,
 }: Step4Props) {
-  const [firstName, setFirstName] = useState(initialFirstName);
-  const [lastName, setLastName] = useState(initialLastName);
+  const [fullName, setFullName] = useState(initialFullName);
   const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!firstName.trim() || !lastName.trim()) {
-      setError('Please enter both your first and last name.');
+    const cleanName = fullName.trim().replace(/\s+/g, ' ');
+    if (cleanName.length < 3 || cleanName.split(' ').length < 2) {
+      setError('Please enter your first and last name.');
       return;
     }
 
-    const fullName = `${firstName.trim()} ${lastName.trim()}`;
     onNext({
-      firstName: firstName.trim(),
-      lastName: lastName.trim(),
-      fullName,
+      fullName: cleanName,
     });
   };
 
@@ -40,35 +35,32 @@ export function Step4Name({
       <HammerHouseLogo size="md" align="center" />
 
       {/* Headline */}
-      <h2 className="mt-8 mb-6 font-sans text-[24px] sm:text-[28px] font-bold text-[#0F172A] leading-snug">
+      <h2 className="mt-8 mb-2 font-sans text-[24px] sm:text-[28px] font-bold text-[#0F172A] leading-snug">
         Please enter your full name
       </h2>
+      <p className="text-sm font-medium text-[#64748B] mb-8">
+        We'll prepare your personalized contractor estimate package
+      </p>
 
-      {/* Form Fields */}
+      {/* Single Full Name Form Field */}
       <form onSubmit={handleSubmit} className="max-w-sm mx-auto space-y-4 text-left">
-        <div className="space-y-3">
+        <div>
           <input
             type="text"
-            value={firstName}
+            value={fullName}
             onChange={(e) => {
-              setFirstName(e.target.value);
+              setFullName(e.target.value);
               if (error) setError(null);
             }}
-            placeholder="First Name"
-            className="w-full h-[52px] text-center text-base text-[#0F172A] bg-white border border-[#CBD5E1] rounded-xl focus:border-[#8B1122] focus:ring-2 focus:ring-[#8B1122]/10 transition-all outline-none placeholder:text-[#94A3B8]"
+            placeholder="Full Name"
+            className="w-full h-[52px] text-center text-base font-semibold text-[#0F172A] bg-white border border-[#CBD5E1] rounded-xl focus:border-[#8B1122] focus:ring-2 focus:ring-[#8B1122]/10 transition-all outline-none placeholder:text-[#94A3B8]"
             autoFocus
           />
-
-          <input
-            type="text"
-            value={lastName}
-            onChange={(e) => {
-              setLastName(e.target.value);
-              if (error) setError(null);
-            }}
-            placeholder="Last Name"
-            className="w-full h-[52px] text-center text-base text-[#0F172A] bg-white border border-[#CBD5E1] rounded-xl focus:border-[#8B1122] focus:ring-2 focus:ring-[#8B1122]/10 transition-all outline-none placeholder:text-[#94A3B8]"
-          />
+          {error && (
+            <p className="mt-1.5 text-xs font-medium text-rose-600 text-center animate-fade-in">
+              {error}
+            </p>
+          )}
         </div>
 
         {/* Bell Notification Banner */}
@@ -78,12 +70,6 @@ export function Step4Name({
             Your matches are almost ready!
           </span>
         </div>
-
-        {error && (
-          <p className="text-xs font-medium text-rose-600 text-center animate-fade-in">
-            {error}
-          </p>
-        )}
 
         {/* Symmetrical Bottom Controls */}
         <div className="flex items-center gap-4 pt-3">

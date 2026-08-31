@@ -64,6 +64,7 @@ export const leadSubmissionSchema = z.object({
   city: z.string().min(2, 'City is required'),
   state: z.string().default('FL'),
   serviceType: z.string().default('Replacement'),
+  roofAge: z.string().optional().default('Not sure'),
   fullName: z.string().min(2, 'Please enter your full name'),
   streetAddress: z.string().min(4, 'Please enter a valid street address'),
   isHomeowner: z.boolean().default(true),

@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { Step1ZipHook } from './steps/Step1ZipHook';
 import { Step2ProjectScope } from './steps/Step2ProjectScope';
+import { Step3RoofAge } from './steps/Step3RoofAge';
 import { Step3SearchingMatcher } from './steps/Step3SearchingMatcher';
 import { Step4Name } from './steps/Step4Name';
 import { Step5Address } from './steps/Step5Address';
@@ -15,8 +16,7 @@ export interface FunnelState {
   state: string;
   county: string;
   serviceType: 'Replacement' | 'Repair';
-  firstName: string;
-  lastName: string;
+  roofAge: string;
   fullName: string;
   streetAddress: string;
   isHomeowner: boolean;
@@ -37,8 +37,7 @@ export function HammerHouseFunnel() {
     state: 'FL',
     county: 'Miami-Dade',
     serviceType: 'Replacement',
-    firstName: '',
-    lastName: '',
+    roofAge: 'Not sure',
     fullName: '',
     streetAddress: '',
     isHomeowner: true,
@@ -47,7 +46,7 @@ export function HammerHouseFunnel() {
     tcpaConsent: true,
   });
 
-  // Step 1 -> Step 2
+  // Step 1 (Zip) -> Step 2 (Scope)
   const handleStep1Success = (location: { zipCode: string; city: string; state: string; county: string }) => {
     setFormData((prev) => ({
       ...prev,
@@ -59,40 +58,44 @@ export function HammerHouseFunnel() {
     setCurrentStep(2);
   };
 
-  // Step 2 -> Step 3
+  // Step 2 (Scope) -> Step 3 (Roof Age)
   const handleStep2Select = (serviceType: 'Replacement' | 'Repair') => {
     setFormData((prev) => ({ ...prev, serviceType }));
     setCurrentStep(3);
   };
 
-  // Step 3 -> Step 4
-  const handleStep3Complete = () => {
+  // Step 3 (Roof Age) -> Step 4 (Searching Matcher)
+  const handleStep3AgeSelect = (roofAge: string) => {
+    setFormData((prev) => ({ ...prev, roofAge }));
     setCurrentStep(4);
   };
 
-  // Step 4 -> Step 5
-  const handleStep4Next = (data: { firstName: string; lastName: string; fullName: string }) => {
-    setFormData((prev) => ({
-      ...prev,
-      firstName: data.firstName,
-      lastName: data.lastName,
-      fullName: data.fullName,
-    }));
+  // Step 4 (Searching Matcher) -> Step 5 (Name)
+  const handleStep4SearchingComplete = () => {
     setCurrentStep(5);
   };
 
-  // Step 5 -> Step 6
-  const handleStep5Next = (data: { streetAddress: string; isHomeowner: boolean }) => {
+  // Step 5 (Name) -> Step 6 (Address)
+  const handleStep5NameNext = (data: { fullName: string }) => {
+    setFormData((prev) => ({
+      ...prev,
+      fullName: data.fullName,
+    }));
+    setCurrentStep(6);
+  };
+
+  // Step 6 (Address) -> Step 7 (Contact)
+  const handleStep6AddressNext = (data: { streetAddress: string; isHomeowner: boolean }) => {
     setFormData((prev) => ({
       ...prev,
       streetAddress: data.streetAddress,
       isHomeowner: data.isHomeowner,
     }));
-    setCurrentStep(6);
+    setCurrentStep(7);
   };
 
-  // Step 6 -> Submit -> Step 7
-  const handleStep6Submit = async (data: { email: string; phone: string; tcpaConsent: boolean }) => {
+  // Step 7 (Contact) -> Submit -> Step 8 (Confirmation)
+  const handleStep7ContactSubmit = async (data: { email: string; phone: string; tcpaConsent: boolean }) => {
     setIsSubmitting(true);
     setSubmitError(null);
 
@@ -122,7 +125,7 @@ export function HammerHouseFunnel() {
         leadCode: json.leadCode || `HH-FL-${Math.floor(10000 + Math.random() * 90000)}`,
       }));
 
-      setCurrentStep(7);
+      setCurrentStep(8);
     } catch (err: any) {
       console.error('[Submission Error]', err);
       setSubmitError(err?.message || 'Something went wrong. Please try again.');
@@ -138,8 +141,7 @@ export function HammerHouseFunnel() {
       state: 'FL',
       county: 'Miami-Dade',
       serviceType: 'Replacement',
-      firstName: '',
-      lastName: '',
+      roofAge: 'Not sure',
       fullName: '',
       streetAddress: '',
       isHomeowner: true,
@@ -176,51 +178,60 @@ export function HammerHouseFunnel() {
           />
         )}
 
-        {/* Step 3: Searching... */}
+        {/* Step 3: Roof Age Query */}
         {currentStep === 3 && (
+          <Step3RoofAge
+            onBack={() => setCurrentStep(2)}
+            onSelect={handleStep3AgeSelect}
+            selectedAge={formData.roofAge}
+            city={formData.city}
+          />
+        )}
+
+        {/* Step 4: Searching Florida Network */}
+        {currentStep === 4 && (
           <Step3SearchingMatcher
             city={formData.city}
             county={formData.county}
-            onComplete={handleStep3Complete}
+            onComplete={handleStep4SearchingComplete}
           />
         )}
 
-        {/* Step 4: Name */}
-        {currentStep === 4 && (
-          <Step4Name
-            initialFirstName={formData.firstName}
-            initialLastName={formData.lastName}
-            onBack={() => setCurrentStep(2)}
-            onNext={handleStep4Next}
-          />
-        )}
-
-        {/* Step 5: Street Address & Homeowner */}
+        {/* Step 5: Full Name */}
         {currentStep === 5 && (
+          <Step4Name
+            initialFullName={formData.fullName}
+            onBack={() => setCurrentStep(3)}
+            onNext={handleStep5NameNext}
+          />
+        )}
+
+        {/* Step 6: Street Address & Homeowner */}
+        {currentStep === 6 && (
           <Step5Address
             city={formData.city}
             zipCode={formData.zipCode}
             initialAddress={formData.streetAddress}
             initialIsHomeowner={formData.isHomeowner}
-            onBack={() => setCurrentStep(4)}
-            onNext={handleStep5Next}
+            onBack={() => setCurrentStep(5)}
+            onNext={handleStep6AddressNext}
           />
         )}
 
-        {/* Step 6: Email & Phone */}
-        {currentStep === 6 && (
+        {/* Step 7: Email & Phone */}
+        {currentStep === 7 && (
           <Step6Contact
             city={formData.city}
             initialEmail={formData.email}
             initialPhone={formData.phone}
             isSubmitting={isSubmitting}
-            onBack={() => setCurrentStep(5)}
-            onSubmit={handleStep6Submit}
+            onBack={() => setCurrentStep(6)}
+            onSubmit={handleStep7ContactSubmit}
           />
         )}
 
-        {/* Step 7: Confirmation & Project Details */}
-        {currentStep === 7 && (
+        {/* Step 8: Confirmation & Project Details */}
+        {currentStep === 8 && (
           <Step7Confirmation
             leadData={{
               leadCode: formData.leadCode || 'HH-FL-89210',
@@ -232,6 +243,7 @@ export function HammerHouseFunnel() {
               phone: formData.phone,
               email: formData.email,
               serviceType: formData.serviceType,
+              roofAge: formData.roofAge,
             }}
             onReset={handleReset}
           />

@@ -13,6 +13,7 @@ interface Step7Props {
     phone: string;
     email: string;
     serviceType: string;
+    roofAge?: string;
   };
   onReset: () => void;
 }
@@ -27,18 +28,18 @@ export function Step7Confirmation({ leadData, onReset }: Step7Props) {
   };
 
   return (
-    <div className="space-y-6 sm:space-y-7 animate-fade-in text-left max-w-md mx-auto">
+    <div className="space-y-6 animate-fade-in text-left max-w-md mx-auto">
       {/* Brand Header */}
       <div className="text-center space-y-3">
         <HammerHouseLogo size="md" align="center" />
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold">
+        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold shadow-sm">
           <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0" />
           <span>Estimate Request Confirmed</span>
         </div>
       </div>
 
       {/* What Happens Next Section */}
-      <div className="space-y-3 bg-[#F8FAFC] p-5 rounded-2xl border border-slate-200">
+      <div className="space-y-3 bg-[#F8FAFC] p-4.5 sm:p-5 rounded-2xl border border-slate-200">
         <h2 className="font-sans text-xl font-bold text-[#0F172A]">
           What Happens Next:
         </h2>
@@ -53,16 +54,16 @@ export function Step7Confirmation({ leadData, onReset }: Step7Props) {
         </ul>
       </div>
 
-      {/* Project Details Section */}
+      {/* Project Details Section (Fully Responsive) */}
       <div className="space-y-3 pt-1">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-wrap items-center justify-between gap-2">
           <h3 className="font-sans text-lg font-bold text-[#0F172A]">
             Your Project Details:
           </h3>
           <button
             type="button"
             onClick={handleCopyCode}
-            className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-white hover:bg-slate-50 text-xs font-bold text-[#0F172A] transition-colors cursor-pointer border border-slate-200 shadow-sm"
+            className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white hover:bg-slate-50 text-xs font-bold text-[#0F172A] transition-colors cursor-pointer border border-slate-200 shadow-sm shrink-0"
             title="Copy Reference Code"
           >
             {copied ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5 text-slate-400" />}
@@ -73,29 +74,45 @@ export function Step7Confirmation({ leadData, onReset }: Step7Props) {
         <div className="space-y-3 divide-y divide-slate-100 text-sm bg-white p-4.5 rounded-2xl border border-slate-200 shadow-sm">
           <div>
             <p className="text-xs font-bold uppercase tracking-wider text-[#64748B]">Request:</p>
-            <p className="text-base font-bold text-[#0D9488]">
+            <p className="text-base font-bold text-[#0D9488] break-words">
               Free Roofing Estimate ({leadData.serviceType === 'Replacement' ? 'Full Replacement' : 'Roof Repair'})
             </p>
           </div>
 
+          {leadData.roofAge && (
+            <div className="pt-2.5">
+              <p className="text-xs font-bold uppercase tracking-wider text-[#64748B]">Roof Age:</p>
+              <p className="text-base font-bold text-[#0D9488]">
+                {leadData.roofAge}
+              </p>
+            </div>
+          )}
+
           <div className="pt-2.5">
             <p className="text-xs font-bold uppercase tracking-wider text-[#64748B]">Homeowner / Decision Maker:</p>
-            <p className="text-base font-bold text-[#0D9488]">
+            <p className="text-base font-bold text-[#0D9488] break-words">
               {leadData.fullName}
             </p>
           </div>
 
           <div className="pt-2.5">
             <p className="text-xs font-bold uppercase tracking-wider text-[#64748B]">Property Address:</p>
-            <p className="text-base font-bold text-[#0D9488]">
+            <p className="text-base font-bold text-[#0D9488] break-words">
               {leadData.streetAddress}, {leadData.city}, {leadData.state} {leadData.zipCode}
             </p>
           </div>
 
           <div className="pt-2.5">
-            <p className="text-xs font-bold uppercase tracking-wider text-[#64748B]">Phone & Email:</p>
+            <p className="text-xs font-bold uppercase tracking-wider text-[#64748B]">Phone Number:</p>
             <p className="text-base font-bold text-[#0D9488]">
-              {leadData.phone} • {leadData.email}
+              {leadData.phone}
+            </p>
+          </div>
+
+          <div className="pt-2.5">
+            <p className="text-xs font-bold uppercase tracking-wider text-[#64748B]">Email Address:</p>
+            <p className="text-base font-bold text-[#0D9488] break-all">
+              {leadData.email}
             </p>
           </div>
         </div>
