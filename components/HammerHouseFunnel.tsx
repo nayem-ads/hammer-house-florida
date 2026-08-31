@@ -42,7 +42,6 @@ export function HammerHouseFunnel() {
     tcpaConsent: true,
   });
 
-  // Step 1 Success (Zip entered)
   const handleStep1Success = (location: { zipCode: string; city: string; state: string; county: string }) => {
     setFormData((prev) => ({
       ...prev,
@@ -54,18 +53,15 @@ export function HammerHouseFunnel() {
     setCurrentStep(2);
   };
 
-  // Step 2 Success (Service chosen)
   const handleStep2Select = (serviceType: 'Replacement' | 'Repair' | 'Inspection') => {
     setFormData((prev) => ({ ...prev, serviceType }));
-    setCurrentStep(3); // Goes to searching animation
+    setCurrentStep(3);
   };
 
-  // Step 3 Success (Searching finished)
   const handleStep3Complete = () => {
     setCurrentStep(4);
   };
 
-  // Step 4 Success (Name & Address entered)
   const handleStep4Next = (data: { fullName: string; streetAddress: string; isHomeowner: boolean }) => {
     setFormData((prev) => ({
       ...prev,
@@ -76,7 +72,6 @@ export function HammerHouseFunnel() {
     setCurrentStep(5);
   };
 
-  // Step 5 Submit (Contact Info & Final Submission)
   const handleStep5Submit = async (data: { email: string; phone: string; tcpaConsent: boolean }) => {
     setIsSubmitting(true);
     setSubmitError(null);
@@ -134,25 +129,24 @@ export function HammerHouseFunnel() {
     setSubmitError(null);
   };
 
-  // Progress Bar calculation (Steps 1 to 5)
   const progressPercent = Math.min(100, Math.round(((currentStep - 1) / 4) * 100));
 
   return (
     <div className="relative z-10 w-full max-w-xl mx-auto px-4 py-6 sm:py-10">
-      {/* Floating Card Container with Artisan Shadow */}
-      <div className="relative bg-white/95 backdrop-blur-md rounded-3xl p-6 sm:p-10 md:p-12 shadow-artisan-lg border border-burgundy-900/5 ring-1 ring-black/[0.03]">
-        {/* Subtle Top Progress Bar (Visible during active form steps 2-5) */}
+      {/* Floating Card Container with Crisp Border & Shadow */}
+      <div className="relative bg-white rounded-3xl p-6 sm:p-10 md:p-11 shadow-card border border-slate-200">
+        {/* Top Progress Bar (Visible during active form steps 2-5) */}
         {currentStep > 1 && currentStep < 6 && (
-          <div className="absolute top-0 left-0 right-0 h-1.5 bg-linen-200 rounded-t-3xl overflow-hidden">
+          <div className="absolute top-0 left-0 right-0 h-1.5 bg-slate-100 rounded-t-3xl overflow-hidden">
             <div
-              className="h-full bg-gradient-to-r from-burgundy-600 to-burgundy-800 transition-all duration-500 ease-out"
+              className="h-full bg-[#8B1122] transition-all duration-300 ease-out"
               style={{ width: `${progressPercent}%` }}
             />
           </div>
         )}
 
         {submitError && (
-          <div className="mb-4 p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-semibold text-center animate-fade-in">
+          <div className="mb-4 p-3.5 rounded-xl bg-rose-50 border border-rose-300 text-rose-800 text-xs font-bold text-center animate-fade-in">
             {submitError}
           </div>
         )}
@@ -220,16 +214,16 @@ export function HammerHouseFunnel() {
         )}
       </div>
 
-      {/* Persistent Global Footer */}
-      <footer className="mt-8 text-center text-xs text-charcoal-500 space-y-2">
-        <div className="flex items-center justify-center gap-4 font-medium">
-          <a href="#privacy" className="hover:text-burgundy-800 transition-colors">Privacy Policy</a>
+      {/* Footer */}
+      <footer className="mt-8 text-center text-xs font-medium text-[#1E293B] space-y-2">
+        <div className="flex items-center justify-center gap-4 font-semibold">
+          <a href="#privacy" className="hover:text-[#8B1122] transition-colors">Privacy Policy</a>
           <span>•</span>
-          <a href="#terms" className="hover:text-burgundy-800 transition-colors">Terms of Service</a>
+          <a href="#terms" className="hover:text-[#8B1122] transition-colors">Terms of Service</a>
           <span>•</span>
-          <a href="#pro" className="hover:text-burgundy-800 transition-colors">I'm a Florida Pro</a>
+          <a href="#pro" className="hover:text-[#8B1122] transition-colors">I'm a Florida Pro</a>
         </div>
-        <p className="text-[11px] text-charcoal-400">
+        <p className="text-[11px] text-[#334155] font-normal">
           © {new Date().getFullYear()} Hammer House. All Rights Reserved. Licensed Florida Roofing Appointment Network.
         </p>
       </footer>

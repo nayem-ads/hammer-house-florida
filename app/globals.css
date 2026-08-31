@@ -2,16 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --font-playfair: 'Playfair Display', Georgia, serif;
-  --font-jakarta: 'Plus Jakarta Sans', Inter, sans-serif;
-}
-
 @layer base {
   html {
-    font-family: var(--font-jakarta);
-    background-color: #FAF8F5;
-    color: #141416;
+    font-family: var(--font-poppins), system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    background-color: #F8F9FA;
+    color: #0F172A;
     -webkit-tap-highlight-color: transparent;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -24,7 +19,7 @@
   }
 
   ::selection {
-    background-color: #8B1E2D;
+    background-color: #8B1122;
     color: #ffffff;
   }
 }
@@ -36,14 +31,14 @@
 }
 
 ::-webkit-scrollbar-track {
-  background: #FAF8F5;
+  background: #F1F5F9;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #DDD1BF;
+  background: #CBD5E1;
   border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #8B1E2D;
+  background: #8B1122;
 }

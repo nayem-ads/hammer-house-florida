@@ -35,9 +35,8 @@ export function Step4NameAddress({
   useEffect(() => {
     if (address.trim().length >= 2) {
       const query = address.toLowerCase();
-      // Realistic Florida address pattern generator
-      const streetTypes = ['Ave', 'St', 'Blvd', 'Dr', 'Way', 'Lane', 'Court', 'Circle', 'Ocean Dr', 'Palmetto Way'];
-      const numbers = ['1037', '2509', '412', '780', '1240', '350', '8820', '510', '1904', '620'];
+      const streetTypes = ['Ave', 'St', 'Blvd', 'Dr', 'Way', 'Lane', 'Court'];
+      const numbers = ['1037', '2509', '412', '780', '1240'];
       
       const sampleStreets = [
         'Biscayne', 'Ocean', 'Palmetto', 'Coble', 'Magnolia', 'Cypress', 'Palm Beach', 'Orange', 'Sunshine', 'Gulf'
@@ -49,7 +48,6 @@ export function Step4NameAddress({
           `${numbers[0]} ${s} ${streetTypes[0]}`,
           `${numbers[1]} ${s} ${streetTypes[1]}`,
           `${numbers[2]} ${s} ${streetTypes[2]}`,
-          `${numbers[3]} ${s} ${streetTypes[3]}`,
         ])
         .slice(0, 5);
 
@@ -57,7 +55,6 @@ export function Step4NameAddress({
         setSuggestions(matches);
         setShowDropdown(true);
       } else {
-        // Fallback realistic suggestions matching what user types
         setSuggestions([
           `${address.trim()} Ave, ${city}, FL ${zipCode}`,
           `${address.trim()} St, ${city}, FL ${zipCode}`,
@@ -71,7 +68,6 @@ export function Step4NameAddress({
     }
   }, [address, city, zipCode]);
 
-  // Click outside listener for dropdown
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
@@ -133,30 +129,30 @@ export function Step4NameAddress({
   };
 
   return (
-    <div className="space-y-6 sm:space-y-7 animate-fade-in">
+    <div className="space-y-6 animate-fade-in">
       {/* Brand Header */}
-      <div className="text-center space-y-3">
+      <div className="text-center space-y-2.5">
         <HammerHouseLogo size="sm" align="center" />
         <div className="pt-1">
-          <span className="text-xs font-semibold uppercase tracking-wider text-burgundy-700 bg-burgundy-50 px-3 py-1 rounded-full border border-burgundy-200/50">
+          <span className="text-xs font-bold uppercase tracking-wider text-[#8B1122] bg-red-50 px-3 py-1 rounded-full border border-red-200">
             Step 2 of 4 • Property & Identity
           </span>
-          <h2 className="font-serif text-2xl sm:text-3xl font-bold text-charcoal-900 tracking-tight leading-[1.2] mt-3">
+          <h2 className="font-sans text-2xl sm:text-[28px] font-extrabold text-[#0F172A] tracking-[-0.03em] leading-tight mt-3">
             Who and where is this estimate for?
           </h2>
-          <p className="text-xs sm:text-sm text-charcoal-600 max-w-md mx-auto leading-relaxed pt-1">
-            Required to verify satellite roof dimensions & local service radius in <span className="font-semibold text-charcoal-800">{city}, FL</span>
+          <p className="text-sm font-medium text-[#1E293B] max-w-md mx-auto leading-normal pt-1">
+            Required to verify satellite roof dimensions in <span className="font-bold text-[#0F172A]">{city}, FL</span>
           </p>
         </div>
       </div>
 
       {/* Notification Banner */}
-      <div className="bg-linen-100/90 border border-linen-200/80 rounded-xl p-3 sm:p-3.5 flex items-center gap-3">
-        <div className="w-8 h-8 rounded-full bg-burgundy-50 border border-burgundy-200 flex items-center justify-center shrink-0">
-          <Bell className="w-4 h-4 text-burgundy-700 animate-pulse" />
+      <div className="bg-slate-100 border border-slate-300 rounded-xl p-3.5 flex items-center gap-3">
+        <div className="w-8 h-8 rounded-full bg-white border border-slate-300 flex items-center justify-center shrink-0 shadow-sm">
+          <Bell className="w-4 h-4 text-[#8B1122]" />
         </div>
-        <p className="text-xs sm:text-sm font-semibold text-charcoal-800">
-          Great news! 3 certified contractors are currently available in {city}.
+        <p className="text-xs sm:text-sm font-bold text-[#0F172A]">
+          Your matches are almost ready! 3 verified contractors found in {city}.
         </p>
       </div>
 
@@ -164,12 +160,12 @@ export function Step4NameAddress({
       <form onSubmit={handleSubmit} className="space-y-4">
         {/* Full Name Field */}
         <div className="space-y-1.5 text-left">
-          <label className="text-xs font-bold uppercase tracking-wider text-charcoal-700">
-            Full Name <span className="text-burgundy-700">*</span>
+          <label className="text-xs font-extrabold uppercase tracking-wider text-[#0F172A]">
+            Full Name <span className="text-[#8B1122]">*</span>
           </label>
           <div className="relative">
-            <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-charcoal-400">
-              <User className="w-4 h-4 text-burgundy-700" />
+            <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500">
+              <User className="w-4 h-4 text-[#8B1122]" />
             </div>
             <input
               type="text"
@@ -179,23 +175,23 @@ export function Step4NameAddress({
                 if (errors.fullName) setErrors((prev) => ({ ...prev, fullName: undefined }));
               }}
               placeholder="e.g. John Smith"
-              className="w-full h-12 pl-10 pr-4 text-base text-charcoal-900 bg-white border-2 border-charcoal-200 rounded-xl focus:border-burgundy-700 focus:ring-4 focus:ring-burgundy-700/10 transition-all outline-none placeholder:text-charcoal-400 shadow-sm"
+              className="w-full h-13 pl-10 pr-4 text-base font-semibold text-[#0F172A] bg-white border-2 border-slate-300 rounded-xl focus:border-[#8B1122] focus:ring-4 focus:ring-[#8B1122]/15 transition-all outline-none placeholder:text-slate-400 shadow-sm"
               autoFocus
             />
           </div>
           {errors.fullName && (
-            <p className="text-xs font-medium text-rose-600 animate-fade-in">{errors.fullName}</p>
+            <p className="text-xs font-bold text-rose-600 animate-fade-in">{errors.fullName}</p>
           )}
         </div>
 
         {/* Street Address Field with Autocomplete Dropdown */}
         <div className="space-y-1.5 text-left relative" ref={dropdownRef}>
-          <label className="text-xs font-bold uppercase tracking-wider text-charcoal-700">
-            Street Address <span className="text-burgundy-700">*</span>
+          <label className="text-xs font-extrabold uppercase tracking-wider text-[#0F172A]">
+            Street Address <span className="text-[#8B1122]">*</span>
           </label>
           <div className="relative">
-            <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-charcoal-400">
-              <Home className="w-4 h-4 text-burgundy-700" />
+            <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500">
+              <Home className="w-4 h-4 text-[#8B1122]" />
             </div>
             <input
               type="text"
@@ -209,27 +205,27 @@ export function Step4NameAddress({
               }}
               onKeyDown={handleKeyDown}
               placeholder="Start typing your street address..."
-              className="w-full h-12 pl-10 pr-4 text-base text-charcoal-900 bg-white border-2 border-charcoal-200 rounded-xl focus:border-burgundy-700 focus:ring-4 focus:ring-burgundy-700/10 transition-all outline-none placeholder:text-charcoal-400 shadow-sm"
+              className="w-full h-13 pl-10 pr-4 text-base font-semibold text-[#0F172A] bg-white border-2 border-slate-300 rounded-xl focus:border-[#8B1122] focus:ring-4 focus:ring-[#8B1122]/15 transition-all outline-none placeholder:text-slate-400 shadow-sm"
               autoComplete="street-address"
             />
           </div>
 
           {/* Autocomplete Dropdown */}
           {showDropdown && suggestions.length > 0 && (
-            <div className="absolute z-30 left-0 right-0 top-full mt-1 bg-white border border-charcoal-200 rounded-xl shadow-xl overflow-hidden animate-fade-in divide-y divide-charcoal-100 max-h-56 overflow-y-auto">
+            <div className="absolute z-30 left-0 right-0 top-full mt-1 bg-white border-2 border-slate-300 rounded-xl shadow-xl overflow-hidden animate-fade-in divide-y divide-slate-100 max-h-56 overflow-y-auto">
               {suggestions.map((item, idx) => (
                 <button
                   key={idx}
                   type="button"
                   onClick={() => handleSelectSuggestion(item)}
                   onMouseEnter={() => setHighlightedIndex(idx)}
-                  className={`w-full text-left px-4 py-2.5 text-sm flex items-center gap-2.5 transition-colors cursor-pointer ${
+                  className={`w-full text-left px-4 py-3 text-sm font-semibold flex items-center gap-2.5 transition-colors cursor-pointer ${
                     highlightedIndex === idx
-                      ? 'bg-blue-600 text-white font-medium'
-                      : 'hover:bg-linen-100 text-charcoal-800'
+                      ? 'bg-blue-600 text-white font-bold'
+                      : 'hover:bg-slate-100 text-[#0F172A]'
                   }`}
                 >
-                  <MapPin className={`w-4 h-4 shrink-0 ${highlightedIndex === idx ? 'text-white' : 'text-burgundy-700'}`} />
+                  <MapPin className={`w-4 h-4 shrink-0 ${highlightedIndex === idx ? 'text-white' : 'text-[#8B1122]'}`} />
                   <span className="truncate">{item}</span>
                 </button>
               ))}
@@ -237,13 +233,13 @@ export function Step4NameAddress({
           )}
 
           {errors.address && (
-            <p className="text-xs font-medium text-rose-600 animate-fade-in">{errors.address}</p>
+            <p className="text-xs font-bold text-rose-600 animate-fade-in">{errors.address}</p>
           )}
         </div>
 
         {/* Homeowner Checkbox */}
-        <div className="pt-2">
-          <label className="flex items-center gap-3 p-3 rounded-xl border border-charcoal-200 bg-white/70 hover:bg-white hover:border-charcoal-300 transition-colors cursor-pointer select-none">
+        <div className="pt-1">
+          <label className="flex items-center gap-3 p-3.5 rounded-xl border-2 border-slate-300 bg-white hover:border-[#8B1122] transition-colors cursor-pointer select-none">
             <input
               type="checkbox"
               checked={isHomeowner}
@@ -254,31 +250,31 @@ export function Step4NameAddress({
               className="sr-only"
             />
             <div
-              className={`w-5 h-5 rounded-md border flex items-center justify-center transition-all ${
+              className={`w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all ${
                 isHomeowner
-                  ? 'bg-burgundy-700 border-burgundy-700 text-white'
-                  : 'bg-white border-charcoal-300'
+                  ? 'bg-[#8B1122] border-[#8B1122] text-white'
+                  : 'bg-white border-slate-400'
               }`}
             >
               {isHomeowner && <Check className="w-3.5 h-3.5 stroke-[3]" />}
             </div>
-            <span className="text-xs sm:text-sm font-semibold text-charcoal-800">
-              I am the homeowner or authorized decision-maker
+            <span className="text-sm font-bold text-[#0F172A]">
+              I'm the Home Owner
             </span>
           </label>
           {errors.isHomeowner && (
-            <p className="text-xs font-medium text-rose-600 mt-1 text-left animate-fade-in">
+            <p className="text-xs font-bold text-rose-600 mt-1 text-left animate-fade-in">
               {errors.isHomeowner}
             </p>
           )}
         </div>
 
         {/* Navigation Buttons */}
-        <div className="flex items-center justify-between pt-3">
+        <div className="flex items-center justify-between pt-2">
           <button
             type="button"
             onClick={onBack}
-            className="w-12 h-12 rounded-full border border-charcoal-200 bg-white text-charcoal-600 hover:text-burgundy-700 hover:border-burgundy-300 transition-colors flex items-center justify-center cursor-pointer shadow-sm"
+            className="w-12 h-12 rounded-full border border-slate-300 bg-white text-[#0F172A] hover:text-[#8B1122] hover:border-[#8B1122] transition-colors flex items-center justify-center cursor-pointer shadow-sm"
             aria-label="Go back"
           >
             <ArrowLeft className="w-5 h-5" />
@@ -286,9 +282,9 @@ export function Step4NameAddress({
 
           <button
             type="submit"
-            className="flex-1 ml-4 h-12 bg-burgundy-700 hover:bg-burgundy-800 active:scale-[0.99] text-white font-sans font-bold text-sm tracking-wide rounded-xl shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer"
+            className="flex-1 ml-4 h-13 bg-[#8B1122] hover:bg-[#730C1A] active:scale-[0.98] text-white font-sans font-bold text-sm sm:text-base tracking-wide rounded-xl shadow-btn transition-all flex items-center justify-center gap-2 cursor-pointer"
           >
-            <span>CONTINUE TO FINAL STEP</span>
+            <span>NEXT</span>
             <ArrowRight className="w-4 h-4" />
           </button>
         </div>

@@ -74,22 +74,22 @@ export function Step5ContactTcpa({
   };
 
   return (
-    <div className="space-y-5 sm:space-y-6 animate-fade-in">
+    <div className="space-y-5 animate-fade-in">
       {/* Brand Header */}
-      <div className="text-center space-y-3">
+      <div className="text-center space-y-2.5">
         <HammerHouseLogo size="sm" align="center" />
         
         {/* Verified Shield */}
-        <div className="w-12 h-12 rounded-full bg-emerald-50 border-2 border-emerald-500/80 text-emerald-600 mx-auto flex items-center justify-center shadow-sm">
+        <div className="w-12 h-12 rounded-full bg-emerald-50 border-2 border-emerald-500 text-emerald-600 mx-auto flex items-center justify-center shadow-sm">
           <ShieldCheck className="w-7 h-7" />
         </div>
 
         <div className="space-y-1">
-          <h2 className="font-serif text-2xl sm:text-3xl font-bold text-charcoal-900 tracking-tight leading-[1.2]">
+          <h2 className="font-sans text-2xl sm:text-[28px] font-extrabold text-[#0F172A] tracking-[-0.03em] leading-tight">
             We Have Matching Pros in {city}, FL!
           </h2>
-          <p className="text-xs sm:text-sm text-charcoal-600 max-w-md mx-auto leading-relaxed">
-            Where should we send your certified estimate package?
+          <p className="text-sm font-medium text-[#1E293B] max-w-md mx-auto leading-normal">
+            Where should we send your matches?
           </p>
         </div>
       </div>
@@ -97,20 +97,20 @@ export function Step5ContactTcpa({
       {/* Form Inputs */}
       <form onSubmit={handleSubmit} className="space-y-4">
         {/* Email Input */}
-        <div className="space-y-1 text-left">
-          <label className="text-xs font-bold uppercase tracking-wider text-charcoal-700">
-            Email Address <span className="text-burgundy-700">*</span>
+        <div className="space-y-1.5 text-left">
+          <label className="text-xs font-extrabold uppercase tracking-wider text-[#0F172A]">
+            Email Address <span className="text-[#8B1122]">*</span>
           </label>
           <div className="relative">
-            <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-charcoal-400">
-              <Mail className="w-4 h-4 text-burgundy-700" />
+            <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500">
+              <Mail className="w-4 h-4 text-[#8B1122]" />
             </div>
             <input
               type="email"
               value={email}
               onChange={handleEmailChange}
               placeholder="e.g. name@example.com"
-              className="w-full h-12 pl-10 pr-4 text-base text-charcoal-900 bg-white border-2 border-charcoal-200 rounded-xl focus:border-burgundy-700 focus:ring-4 focus:ring-burgundy-700/10 transition-all outline-none placeholder:text-charcoal-400 shadow-sm"
+              className="w-full h-13 pl-10 pr-4 text-base font-semibold text-[#0F172A] bg-white border-2 border-slate-300 rounded-xl focus:border-[#8B1122] focus:ring-4 focus:ring-[#8B1122]/15 transition-all outline-none placeholder:text-slate-400 shadow-sm"
               autoFocus
             />
           </div>
@@ -119,25 +119,25 @@ export function Step5ContactTcpa({
             <button
               type="button"
               onClick={applyTypoSuggestion}
-              className="text-xs text-burgundy-700 hover:text-burgundy-900 font-semibold underline text-left block cursor-pointer animate-fade-in"
+              className="text-xs text-[#8B1122] hover:underline font-bold text-left block cursor-pointer animate-fade-in"
             >
-              Did you mean <span className="font-bold">{typoSuggestion}</span>? Click to fix.
+              Did you mean <span className="underline">{typoSuggestion}</span>? Click to fix.
             </button>
           )}
 
           {errors.email && (
-            <p className="text-xs font-medium text-rose-600 animate-fade-in">{errors.email}</p>
+            <p className="text-xs font-bold text-rose-600 animate-fade-in">{errors.email}</p>
           )}
         </div>
 
         {/* Phone Input */}
-        <div className="space-y-1 text-left">
-          <label className="text-xs font-bold uppercase tracking-wider text-charcoal-700">
-            Cell Number (For Instant Match & Confirmation) <span className="text-burgundy-700">*</span>
+        <div className="space-y-1.5 text-left">
+          <label className="text-xs font-extrabold uppercase tracking-wider text-[#0F172A]">
+            Cell Number <span className="text-[#8B1122]">*</span>
           </label>
           <div className="relative">
-            <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-charcoal-400">
-              <Phone className="w-4 h-4 text-burgundy-700" />
+            <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500">
+              <Phone className="w-4 h-4 text-[#8B1122]" />
             </div>
             <input
               type="tel"
@@ -145,37 +145,37 @@ export function Step5ContactTcpa({
               value={phone}
               onChange={handlePhoneChange}
               placeholder="e.g. (305) 555-0192"
-              className="w-full h-12 pl-10 pr-4 text-base text-charcoal-900 bg-white border-2 border-charcoal-200 rounded-xl focus:border-burgundy-700 focus:ring-4 focus:ring-burgundy-700/10 transition-all outline-none placeholder:text-charcoal-400 shadow-sm"
+              className="w-full h-13 pl-10 pr-4 text-base font-semibold text-[#0F172A] bg-white border-2 border-slate-300 rounded-xl focus:border-[#8B1122] focus:ring-4 focus:ring-[#8B1122]/15 transition-all outline-none placeholder:text-slate-400 shadow-sm"
             />
           </div>
           {errors.phone && (
-            <p className="text-xs font-medium text-rose-600 animate-fade-in">{errors.phone}</p>
+            <p className="text-xs font-bold text-rose-600 animate-fade-in">{errors.phone}</p>
           )}
         </div>
 
         {/* Micro-Trust Shield */}
-        <div className="flex items-center justify-center gap-1.5 text-xs text-charcoal-500 pt-1">
-          <Lock className="w-3.5 h-3.5 text-burgundy-700" />
+        <div className="flex items-center justify-center gap-1.5 text-xs font-semibold text-[#0F172A]">
+          <Lock className="w-3.5 h-3.5 text-[#8B1122]" />
           <span>Zero-spam guarantee. Your information is protected & encrypted.</span>
         </div>
 
         {/* Florida Mini-TCPA & Legal Disclaimer */}
-        <div className="text-[11px] text-charcoal-500 leading-relaxed text-left bg-linen-50 p-3 rounded-xl border border-linen-200/60 space-y-1">
+        <div className="text-[11px] text-[#1E293B] font-medium leading-relaxed text-left bg-slate-50 p-3.5 rounded-xl border border-slate-200 space-y-1">
           <p>
-            By clicking “Get Results,” I am providing my electronic signature and expressed written consent to permit <strong>Hammer House</strong> and up to <strong>three Florida DBPR-certified home improvement companies</strong> to contact me at the number provided for quote & appointment scheduling purposes, including the use of automated technology and text messages. I acknowledge my consent is not required to obtain any good or service.
+            By clicking “Get Results,” I am providing my electronic signature and expressed written consent to permit <strong>Hammer House</strong> and up to <strong>four home improvement companies</strong> to contact me at the number provided for marketing purposes, including the use of automated technology and text messages. I acknowledge my consent is not required to obtain any good or service.
           </p>
-          <p className="font-semibold text-charcoal-600">
-            <a href="#privacy" className="hover:underline text-burgundy-800">Terms of Service</a> and <a href="#privacy" className="hover:underline text-burgundy-800">Privacy Policy</a>
+          <p className="font-bold text-[#0F172A] pt-0.5">
+            <a href="#privacy" className="hover:underline text-[#8B1122]">Terms of Service</a> and <a href="#privacy" className="hover:underline text-[#8B1122]">Privacy Policy</a>
           </p>
         </div>
 
         {/* Navigation Buttons */}
-        <div className="flex items-center justify-between pt-2">
+        <div className="flex items-center justify-between pt-1">
           <button
             type="button"
             onClick={onBack}
             disabled={isSubmitting}
-            className="w-12 h-12 rounded-full border border-charcoal-200 bg-white text-charcoal-600 hover:text-burgundy-700 hover:border-burgundy-300 transition-colors flex items-center justify-center cursor-pointer shadow-sm disabled:opacity-50"
+            className="w-12 h-12 rounded-full border border-slate-300 bg-white text-[#0F172A] hover:text-[#8B1122] hover:border-[#8B1122] transition-colors flex items-center justify-center cursor-pointer shadow-sm disabled:opacity-50"
             aria-label="Go back"
           >
             <ArrowLeft className="w-5 h-5" />
@@ -184,12 +184,12 @@ export function Step5ContactTcpa({
           <button
             type="submit"
             disabled={isSubmitting}
-            className="flex-1 ml-4 h-13 bg-burgundy-700 hover:bg-burgundy-800 active:scale-[0.99] disabled:opacity-75 disabled:pointer-events-none text-white font-sans font-bold text-sm sm:text-base tracking-wide rounded-xl shadow-lg shadow-burgundy-900/20 transition-all flex items-center justify-center gap-2 cursor-pointer"
+            className="flex-1 ml-4 h-13 bg-[#8B1122] hover:bg-[#730C1A] active:scale-[0.98] disabled:opacity-75 disabled:pointer-events-none text-white font-sans font-bold text-sm sm:text-base tracking-wide rounded-xl shadow-btn transition-all flex items-center justify-center gap-2 cursor-pointer"
           >
             {isSubmitting ? (
               <>
                 <Loader2 className="w-5 h-5 animate-spin" />
-                <span>MATCHING CERTIFIED PROS...</span>
+                <span>GETTING RESULTS...</span>
               </>
             ) : (
               <>
