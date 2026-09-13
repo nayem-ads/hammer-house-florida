@@ -24,11 +24,25 @@ export interface GHLPayload {
 }
 
 /**
+ * Convert US phone string to E.164 (+1XXXXXXXXXX) format for GoHighLevel
+ */
+function toE164(phone: string): string {
+  const digits = phone.replace(/\D/g, '');
+  if (digits.length === 10) {
+    return `+1${digits}`;
+  }
+  if (digits.length === 11 && digits.startsWith('1')) {
+    return `+${digits}`;
+  }
+  return phone;
+}
+
+/**
  * Dispatch lead data to GoHighLevel via Private Integration API Token OR Inbound Webhook
  */
 export async function sendLeadToGoHighLevel(payload: GHLPayload): Promise<{ success: boolean; message: string }> {
   const pitKey = process.env.GHL_PRIVATE_INTEGRATION_KEY || process.env.GHL_API_KEY || 'pit-24cfb3ea-b549-416e-aeb6-1d53e21b6b2e';
-  const locationId = process.env.GHL_LOCATION_ID;
+  const locationId = process.env.GHL_LOCATION_ID || 'VvGYFY9VH9rUvCfQKTzR';
   const webhookUrl = process.env.GHL_WEBHOOK_URL;
 
   const results: string[] = [];
@@ -36,24 +50,28 @@ export async function sendLeadToGoHighLevel(payload: GHLPayload): Promise<{ succ
   // Method 1: GHL v2 Contacts API via Private Integration Token (PIT)
   if (pitKey && pitKey.trim() !== '') {
     try {
+      const e164Phone = toE164(payload.phone);
       const contactPayload: Record<string, any> = {
+        locationId: locationId.trim(),
         firstName: payload.firstName,
         lastName: payload.lastName,
         name: payload.fullName,
         email: payload.email,
-        phone: payload.phone,
+        phone: e164Phone,
         address1: payload.address1,
         city: payload.city,
         state: payload.state || 'FL',
         postalCode: payload.postalCode,
         country: payload.country || 'US',
-        tags: payload.tags,
-        source: 'Hammer House Florida Funnel',
+        tags: [
+          'Hammer House',
+          'Florida Lead',
+          `Service: ${payload.customFields.service_type}`,
+          `Roof Age: ${payload.customFields.roof_age || 'Not specified'}`,
+          `Ref: ${payload.leadCode}`,
+        ],
+        source: 'Hammer House Florida Web Funnel',
       };
-
-      if (locationId && locationId.trim() !== '') {
-        contactPayload.locationId = locationId.trim();
-      }
 
       const apiRes = await fetch('https://services.leadconnectorhq.com/contacts/', {
         method: 'POST',
