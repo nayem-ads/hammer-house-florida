@@ -33,7 +33,7 @@ export default function RootLayout({
 }>) {
   const gtmId = process.env.NEXT_PUBLIC_GTM_ID;
   const gaId = process.env.NEXT_PUBLIC_GA_ID;
-  const metaPixelId = process.env.NEXT_PUBLIC_META_PIXEL_ID;
+  const metaPixelId = process.env.NEXT_PUBLIC_META_PIXEL_ID || '1555161406349151';
 
   return (
     <html lang="en" className={poppins.variable}>
@@ -89,6 +89,19 @@ export default function RootLayout({
       </head>
 
       <body className="font-sans bg-[#F8F9FA] text-[#0F172A] min-h-screen min-h-[100dvh] flex flex-col justify-center items-center antialiased selection:bg-[#8B1122] selection:text-white">
+        {/* Meta Pixel (noscript fallback) */}
+        {metaPixelId && (
+          <noscript>
+            <img
+              height="1"
+              width="1"
+              style={{ display: 'none' }}
+              src={`https://www.facebook.com/tr?id=${metaPixelId}&ev=PageView&noscript=1`}
+              alt="Meta Pixel"
+            />
+          </noscript>
+        )}
+
         {/* Google Tag Manager (noscript fallback) */}
         {gtmId && (
           <noscript>
