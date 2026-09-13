@@ -13,6 +13,7 @@ export interface GHLPayload {
   tags: string[];
   customFields: {
     service_type: string;
+    roof_age?: string;
     homeowner_confirmed: boolean;
     tcpa_consent_granted: boolean;
     lead_source: string;
@@ -23,38 +24,92 @@ export interface GHLPayload {
 }
 
 /**
- * Dispatch lead data to GoHighLevel Inbound Webhook
+ * Dispatch lead data to GoHighLevel via Private Integration API Token OR Inbound Webhook
  */
 export async function sendLeadToGoHighLevel(payload: GHLPayload): Promise<{ success: boolean; message: string }> {
+  const pitKey = process.env.GHL_PRIVATE_INTEGRATION_KEY || process.env.GHL_API_KEY || 'pit-24cfb3ea-b549-416e-aeb6-1d53e21b6b2e';
+  const locationId = process.env.GHL_LOCATION_ID;
   const webhookUrl = process.env.GHL_WEBHOOK_URL;
 
-  if (!webhookUrl || webhookUrl.trim() === '' || webhookUrl.includes('your_inbound_webhook_id')) {
-    console.log('[GHL Dispatcher] GHL_WEBHOOK_URL is not set. Skipping webhook dispatch. Payload ready:', payload.leadCode);
-    return { success: true, message: 'GHL webhook not configured (logged locally)' };
-  }
+  const results: string[] = [];
 
-  try {
-    const response = await fetch(webhookUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'User-Agent': 'HammerHouse-Webhook/1.0',
-      },
-      body: JSON.stringify(payload),
-    });
+  // Method 1: GHL v2 Contacts API via Private Integration Token (PIT)
+  if (pitKey && pitKey.trim() !== '') {
+    try {
+      const contactPayload: Record<string, any> = {
+        firstName: payload.firstName,
+        lastName: payload.lastName,
+        name: payload.fullName,
+        email: payload.email,
+        phone: payload.phone,
+        address1: payload.address1,
+        city: payload.city,
+        state: payload.state || 'FL',
+        postalCode: payload.postalCode,
+        country: payload.country || 'US',
+        tags: payload.tags,
+        source: 'Hammer House Florida Funnel',
+      };
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error('[GHL Dispatcher Error]', response.status, errorText);
-      return { success: false, message: `GHL returned ${response.status}: ${errorText}` };
+      if (locationId && locationId.trim() !== '') {
+        contactPayload.locationId = locationId.trim();
+      }
+
+      const apiRes = await fetch('https://services.leadconnectorhq.com/contacts/', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${pitKey.trim()}`,
+          'Version': '2021-07-28',
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        body: JSON.stringify(contactPayload),
+      });
+
+      const resText = await apiRes.text();
+
+      if (apiRes.ok) {
+        console.log('[GHL API Success] Contact created in GoHighLevel:', payload.leadCode, resText);
+        results.push('GHL API: Created successfully');
+      } else {
+        console.warn('[GHL API Notice]', apiRes.status, resText);
+        results.push(`GHL API status ${apiRes.status}: ${resText}`);
+      }
+    } catch (apiErr: any) {
+      console.error('[GHL API Exception]', apiErr);
+      results.push(`GHL API Exception: ${apiErr?.message}`);
     }
-
-    const responseData = await response.text();
-    console.log('[GHL Dispatcher Success] Lead dispatched successfully:', payload.leadCode);
-    return { success: true, message: responseData || 'Dispatched successfully' };
-  } catch (error: any) {
-    console.error('[GHL Dispatcher Exception]', error);
-    return { success: false, message: error?.message || 'Network exception during GHL dispatch' };
   }
+
+  // Method 2: GHL Inbound Webhook (if configured)
+  if (webhookUrl && webhookUrl.trim() !== '' && !webhookUrl.includes('your_inbound_webhook_id')) {
+    try {
+      const webhookRes = await fetch(webhookUrl.trim(), {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'User-Agent': 'HammerHouse-Webhook/1.0',
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const hookText = await webhookRes.text();
+      if (webhookRes.ok) {
+        console.log('[GHL Webhook Success] Lead dispatched via webhook:', payload.leadCode);
+        results.push('GHL Webhook: Dispatched successfully');
+      } else {
+        console.error('[GHL Webhook Error]', webhookRes.status, hookText);
+        results.push(`GHL Webhook Error ${webhookRes.status}: ${hookText}`);
+      }
+    } catch (hookErr: any) {
+      console.error('[GHL Webhook Exception]', hookErr);
+      results.push(`GHL Webhook Exception: ${hookErr?.message}`);
+    }
+  }
+
+  return {
+    success: results.some((r) => r.includes('successfully')),
+    message: results.join(' | ') || 'No GHL dispatch method triggered',
+  };
 }
