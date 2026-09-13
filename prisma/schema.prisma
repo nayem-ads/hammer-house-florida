@@ -8,7 +8,7 @@ datasource db {
 }
 
 model Lead {
-  id            String   @id @default(cuid())
+  id            Int      @id @default(autoincrement())
   leadCode      String   @unique
   zipCode       String
   city          String
