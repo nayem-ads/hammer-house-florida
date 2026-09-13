@@ -71,11 +71,10 @@ export async function POST(req: NextRequest) {
         },
       });
     } catch (dbError) {
-      // Log DB storage warning without crashing the user flow
       console.error('[Database Storage Warning]', dbError);
     }
 
-    // 4. Asynchronous GoHighLevel (GHL) Webhook Dispatch
+    // 4. Asynchronous GoHighLevel (GHL) Webhook & v2 Contacts Upsert Dispatch
     const ghlPayload = {
       leadCode,
       firstName,
@@ -105,6 +104,15 @@ export async function POST(req: NextRequest) {
         submitted_at: new Date().toISOString(),
         ip_address: ip,
         user_agent: userAgent,
+        // Meta Click Attribution IDs
+        fbclid: data.fbclid,
+        fbc: data.fbc,
+        fbp: data.fbp,
+        utm_source: data.utm_source,
+        utm_medium: data.utm_medium,
+        utm_campaign: data.utm_campaign,
+        utm_content: data.utm_content,
+        utm_term: data.utm_term,
       },
     };
 

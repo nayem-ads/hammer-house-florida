@@ -34,6 +34,15 @@ export interface FunnelState {
   email: string;
   tcpaConsent: boolean;
   leadCode?: string;
+  // Meta & UTM attribution parameters
+  fbclid?: string;
+  fbc?: string;
+  fbp?: string;
+  utm_source?: string;
+  utm_medium?: string;
+  utm_campaign?: string;
+  utm_content?: string;
+  utm_term?: string;
 }
 
 export function HammerHouseFunnel() {
@@ -55,6 +64,42 @@ export function HammerHouseFunnel() {
     email: '',
     tcpaConsent: true,
   });
+
+  // Extract Meta Click ID, cookies, and UTM tracking parameters on mount
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const urlParams = new URLSearchParams(window.location.search);
+      const fbclid = urlParams.get('fbclid') || '';
+      const utm_source = urlParams.get('utm_source') || '';
+      const utm_medium = urlParams.get('utm_medium') || '';
+      const utm_campaign = urlParams.get('utm_campaign') || '';
+      const utm_content = urlParams.get('utm_content') || '';
+      const utm_term = urlParams.get('utm_term') || '';
+
+      // Read Meta Pixel first-party cookies
+      const getCookie = (name: string) => {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) return parts.pop()?.split(';').shift() || '';
+        return '';
+      };
+
+      const fbp = getCookie('_fbp');
+      const fbc = getCookie('_fbc') || (fbclid ? `fb.1.${Date.now()}.${fbclid}` : '');
+
+      setFormData((prev) => ({
+        ...prev,
+        fbclid,
+        fbc,
+        fbp,
+        utm_source,
+        utm_medium,
+        utm_campaign,
+        utm_content,
+        utm_term,
+      }));
+    }
+  }, []);
 
   // Track step progression in GTM / Google Analytics
   useEffect(() => {
@@ -175,13 +220,14 @@ export function HammerHouseFunnel() {
           currency: 'USD',
         });
 
-        // Meta Pixel Lead Event
+        // Meta Pixel Lead Event with Advanced Matching parameters
         if (typeof window.fbq === 'function') {
           window.fbq('track', 'Lead', {
             content_name: 'Florida Roofing Estimate',
             content_category: fullPayload.serviceType,
             value: 150.00,
             currency: 'USD',
+            status: 'Lead Created',
           });
         }
 

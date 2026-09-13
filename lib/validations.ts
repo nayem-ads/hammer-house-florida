@@ -79,6 +79,15 @@ export const leadSubmissionSchema = z.object({
     .email('Please enter a valid email address')
     .toLowerCase(),
   tcpaConsent: z.boolean().default(true),
+  // Meta and UTM Tracking Parameters
+  fbclid: z.string().optional(),
+  fbc: z.string().optional(),
+  fbp: z.string().optional(),
+  utm_source: z.string().optional(),
+  utm_medium: z.string().optional(),
+  utm_campaign: z.string().optional(),
+  utm_content: z.string().optional(),
+  utm_term: z.string().optional(),
 });
 
 export type LeadSubmissionInput = z.infer<typeof leadSubmissionSchema>;
