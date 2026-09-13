@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Link from 'next/link';
 import { HammerHouseLogo } from '../Logo';
 import { formatPhoneNumber, isValidUSPhone } from '@/lib/validations';
 import { ArrowLeft, Check, Loader2, Lock } from 'lucide-react';
@@ -106,7 +107,7 @@ export function Step6Contact({
         {/* Legal Disclaimer */}
         <p className="text-[11px] text-[#64748B] font-normal leading-relaxed text-center pt-1 px-1">
           By clicking “Get Results,” I am providing my electronic signature and expressed written consent to permit <strong>Hammer House</strong> and up to <strong>four home improvement companies</strong> to contact me at the number provided for marketing purposes, including the use of automated technology and text messages. I acknowledge my consent is not required to obtain any good or service.{' '}
-          <a href="#terms" className="underline hover:text-[#0F172A] font-medium">Terms of Service</a> and <a href="#privacy" className="underline hover:text-[#0F172A] font-medium">Privacy Policy</a>
+          <Link href="/terms-of-service" target="_blank" rel="noopener noreferrer" className="underline hover:text-[#0F172A] font-semibold text-[#8B1122]">Terms of Service</Link> and <Link href="/privacy-policy" target="_blank" rel="noopener noreferrer" className="underline hover:text-[#0F172A] font-semibold text-[#8B1122]">Privacy Policy</Link>
         </p>
 
         {error && (

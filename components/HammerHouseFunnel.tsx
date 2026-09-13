@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { Step1ZipHook } from './steps/Step1ZipHook';
 import { Step2ProjectScope } from './steps/Step2ProjectScope';
 import { Step3RoofAge } from './steps/Step3RoofAge';
@@ -9,6 +10,15 @@ import { Step4Name } from './steps/Step4Name';
 import { Step5Address } from './steps/Step5Address';
 import { Step6Contact } from './steps/Step6Contact';
 import { Step7Confirmation } from './steps/Step7Confirmation';
+
+// Declare global types for GTM/GA4/Meta Pixel
+declare global {
+  interface Window {
+    dataLayer?: any[];
+    fbq?: (...args: any[]) => void;
+    gtag?: (...args: any[]) => void;
+  }
+}
 
 export interface FunnelState {
   zipCode: string;
@@ -45,6 +55,29 @@ export function HammerHouseFunnel() {
     email: '',
     tcpaConsent: true,
   });
+
+  // Track step progression in GTM / Google Analytics
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      window.dataLayer = window.dataLayer || [];
+      const stepNames = [
+        '',
+        'Step 1: Zip Code',
+        'Step 2: Service Scope',
+        'Step 3: Roof Age',
+        'Step 4: Contractor Matcher',
+        'Step 5: Full Name',
+        'Step 6: Street Address',
+        'Step 7: Contact Info',
+        'Step 8: Estimate Confirmed',
+      ];
+      window.dataLayer.push({
+        event: 'funnel_step_view',
+        step_number: currentStep,
+        step_name: stepNames[currentStep] || `Step ${currentStep}`,
+      });
+    }
+  }, [currentStep]);
 
   // Step 1 (Zip) -> Step 2 (Scope)
   const handleStep1Success = (location: { zipCode: string; city: string; state: string; county: string }) => {
@@ -119,11 +152,48 @@ export function HammerHouseFunnel() {
         throw new Error(json?.error || 'Failed to submit estimate request.');
       }
 
+      const assignedLeadCode = json.leadCode || `HH-FL-${Math.floor(10000 + Math.random() * 90000)}`;
+
       setFormData((prev) => ({
         ...prev,
         ...fullPayload,
-        leadCode: json.leadCode || `HH-FL-${Math.floor(10000 + Math.random() * 90000)}`,
+        leadCode: assignedLeadCode,
       }));
+
+      // Conversion Tracking: Google Tag Manager DataLayer Push
+      if (typeof window !== 'undefined') {
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({
+          event: 'lead_submitted',
+          lead_id: assignedLeadCode,
+          service_type: fullPayload.serviceType,
+          roof_age: fullPayload.roofAge,
+          city: fullPayload.city,
+          state: fullPayload.state,
+          zip_code: fullPayload.zipCode,
+          value: 150.00,
+          currency: 'USD',
+        });
+
+        // Meta Pixel Lead Event
+        if (typeof window.fbq === 'function') {
+          window.fbq('track', 'Lead', {
+            content_name: 'Florida Roofing Estimate',
+            content_category: fullPayload.serviceType,
+            value: 150.00,
+            currency: 'USD',
+          });
+        }
+
+        // Google Analytics 4 generate_lead Event
+        if (typeof window.gtag === 'function') {
+          window.gtag('event', 'generate_lead', {
+            transaction_id: assignedLeadCode,
+            value: 150.00,
+            currency: 'USD',
+          });
+        }
+      }
 
       setCurrentStep(8);
     } catch (err: any) {
@@ -250,13 +320,24 @@ export function HammerHouseFunnel() {
         )}
       </div>
 
-      {/* Global Footer Links */}
+      {/* Global Footer Links with valid routing */}
       <footer className="mt-8 text-center text-xs text-[#64748B] space-y-2">
-        <div className="flex items-center justify-center gap-4 font-normal">
-          <a href="#privacy" className="hover:underline">Privacy Policy</a>
-          <span>Terms of Service</span>
-          <span>I'm a Pro</span>
+        <div className="flex items-center justify-center gap-4 font-medium">
+          <Link href="/privacy-policy" target="_blank" rel="noopener noreferrer" className="hover:text-[#8B1122] hover:underline transition-colors">
+            Privacy Policy
+          </Link>
+          <span>•</span>
+          <Link href="/terms-of-service" target="_blank" rel="noopener noreferrer" className="hover:text-[#8B1122] hover:underline transition-colors">
+            Terms of Service
+          </Link>
+          <span>•</span>
+          <Link href="/pro" target="_blank" rel="noopener noreferrer" className="hover:text-[#8B1122] hover:underline transition-colors">
+            I'm a Florida Pro
+          </Link>
         </div>
+        <p className="text-[11px] text-[#94A3B8]">
+          © {new Date().getFullYear()} Hammer House. All Rights Reserved. Licensed Florida Roofing Appointment Network.
+        </p>
       </footer>
     </div>
   );

@@ -2,7 +2,16 @@ import { NextRequest, NextResponse } from 'next/server';
 import { leadSubmissionSchema, parseFullName } from '@/lib/validations';
 import { db } from '@/lib/db';
 import { sendLeadToGoHighLevel } from '@/lib/ghl';
+import { sendBrevoLeadNotification } from '@/lib/brevo';
 import { checkRateLimit } from '@/lib/rate-limit';
+
+// Strict security: Reject any GET/PUT/DELETE requests to prevent data leakage
+export async function GET() {
+  return NextResponse.json(
+    { error: 'Method not allowed' },
+    { status: 405, headers: { Allow: 'POST' } }
+  );
+}
 
 export async function POST(req: NextRequest) {
   try {
@@ -11,7 +20,7 @@ export async function POST(req: NextRequest) {
     const ip = forwarded ? forwarded.split(',')[0].trim() : realIp || '127.0.0.1';
     const userAgent = req.headers.get('user-agent') || 'Unknown';
 
-    // 1. IP Rate Limiting Check
+    // 1. IP Rate Limiting Check (15 submissions / 15 mins per IP)
     const rateCheck = checkRateLimit(ip, 15, 15 * 60 * 1000);
     if (!rateCheck.isAllowed) {
       return NextResponse.json(
@@ -21,9 +30,12 @@ export async function POST(req: NextRequest) {
     }
 
     // 2. Parse & Validate Body
-    const body = await req.json();
-    const validationResult = leadSubmissionSchema.safeParse(body);
+    const body = await req.json().catch(() => null);
+    if (!body) {
+      return NextResponse.json({ error: 'Invalid JSON payload' }, { status: 400 });
+    }
 
+    const validationResult = leadSubmissionSchema.safeParse(body);
     if (!validationResult.success) {
       const firstError = validationResult.error.errors[0]?.message || 'Invalid lead data.';
       return NextResponse.json({ error: firstError }, { status: 400 });
@@ -33,6 +45,7 @@ export async function POST(req: NextRequest) {
     const { firstName, lastName } = parseFullName(data.fullName);
     const randomSuffix = Math.floor(10000 + Math.random() * 90000);
     const leadCode = `HH-FL-${randomSuffix}`;
+    const submittedAt = new Date().toLocaleString('en-US', { timeZone: 'America/New_York' });
 
     // 3. Save to Database (Prisma / PostgreSQL on Railway)
     try {
@@ -58,6 +71,7 @@ export async function POST(req: NextRequest) {
         },
       });
     } catch (dbError) {
+      // Log DB storage warning without crashing the user flow
       console.error('[Database Storage Warning]', dbError);
     }
 
@@ -94,11 +108,33 @@ export async function POST(req: NextRequest) {
       },
     };
 
-    // Dispatch webhook asynchronously
-    sendLeadToGoHighLevel(ghlPayload).catch((err) => {
-      console.error('[Async GHL Error]', err);
+    // 5. Asynchronous Brevo Email Notification
+    const brevoPayload = {
+      leadCode,
+      fullName: data.fullName,
+      phone: data.phone,
+      email: data.email,
+      streetAddress: data.streetAddress,
+      city: data.city,
+      state: data.state || 'FL',
+      zipCode: data.zipCode,
+      serviceType: data.serviceType,
+      roofAge: data.roofAge,
+      isHomeowner: data.isHomeowner,
+      tcpaConsent: data.tcpaConsent,
+      ipAddress: ip,
+      submittedAt: `${submittedAt} EST`,
+    };
+
+    // Execute background dispatches in parallel
+    Promise.allSettled([
+      sendLeadToGoHighLevel(ghlPayload),
+      sendBrevoLeadNotification(brevoPayload),
+    ]).catch((err) => {
+      console.error('[Background Routing Error]', err);
     });
 
+    // 6. Secure Sanitized Output (only return reference code, zero internal secrets)
     return NextResponse.json({
       success: true,
       leadCode,
@@ -107,7 +143,7 @@ export async function POST(req: NextRequest) {
   } catch (error: any) {
     console.error('[API Leads Critical Error]', error);
     return NextResponse.json(
-      { error: error?.message || 'Server encountered an unexpected error.' },
+      { error: 'An unexpected error occurred while processing your request. Please try again.' },
       { status: 500 }
     );
   }

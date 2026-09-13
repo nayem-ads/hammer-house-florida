@@ -28,21 +28,30 @@ export function Step5Address({
 
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    if (address.trim().length >= 2) {
+  // Generate realistic Florida address suggestions only when user types
+  const handleAddressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    setAddress(val);
+    if (error) setError(null);
+
+    if (val.trim().length >= 2) {
       const sampleStreets = [
-        'Coble Ave', 'Ocean Dr', 'Biscayne Blvd', 'Palmetto Way', 'Magnolia St', 'Palm Beach Lakes', 'Orange Ave'
+        'Coble Ave', 'Ocean Dr', 'Biscayne Blvd', 'Palmetto Way', 'Magnolia St', 'Palm Beach Lakes Blvd', 'Orange Ave', 'Sunshine Blvd', 'Gulf to Bay Blvd', 'Atlantic Ave'
       ];
       const numbers = ['1037', '136', '137', '304', '310', '314', '315', '403', '405', '411'];
-      const matches = numbers.map((num) => `${num} ${sampleStreets[0]}`);
-
-      setSuggestions(matches);
+      
+      const query = val.toLowerCase().trim();
+      const filtered = sampleStreets.filter((s) => s.toLowerCase().includes(query));
+      const streetsToUse = filtered.length > 0 ? filtered : sampleStreets;
+      
+      const generated = numbers.slice(0, 5).map((num, i) => `${num} ${streetsToUse[i % streetsToUse.length]}`);
+      setSuggestions(generated);
       setShowDropdown(true);
     } else {
       setSuggestions([]);
       setShowDropdown(false);
     }
-  }, [address]);
+  };
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
@@ -54,8 +63,10 @@ export function Step5Address({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  // Instant single-click selection (with onMouseDown to prevent blur race conditions)
   const handleSelectSuggestion = (selectedAddr: string) => {
     setAddress(selectedAddr);
+    setSuggestions([]);
     setShowDropdown(false);
     if (error) setError(null);
   };
@@ -72,6 +83,8 @@ export function Step5Address({
     } else if (e.key === 'Enter' && highlightedIndex >= 0) {
       e.preventDefault();
       handleSelectSuggestion(suggestions[highlightedIndex]);
+    } else if (e.key === 'Escape') {
+      setShowDropdown(false);
     }
   };
 
@@ -110,36 +123,38 @@ export function Step5Address({
           <input
             type="text"
             value={address}
-            onChange={(e) => {
-              setAddress(e.target.value);
-              if (error) setError(null);
-            }}
+            onChange={handleAddressChange}
             onFocus={() => {
-              if (suggestions.length > 0) setShowDropdown(true);
+              if (address.trim().length >= 2 && suggestions.length > 0) {
+                setShowDropdown(true);
+              }
             }}
             onKeyDown={handleKeyDown}
             placeholder="Street Address"
             className="w-full h-[52px] text-center text-base text-[#0F172A] bg-white border border-[#CBD5E1] rounded-xl focus:border-[#8B1122] focus:ring-2 focus:ring-[#8B1122]/10 transition-all outline-none placeholder:text-[#94A3B8]"
             autoFocus
+            autoComplete="street-address"
           />
 
           {/* Autocomplete Dropdown */}
           {showDropdown && suggestions.length > 0 && (
             <div className="absolute z-30 left-0 right-0 top-full mt-1 bg-white border border-[#CBD5E1] rounded-xl shadow-lg overflow-hidden animate-fade-in divide-y divide-slate-100 max-h-56 overflow-y-auto">
               {suggestions.map((item, idx) => (
-                <button
+                <div
                   key={idx}
-                  type="button"
-                  onClick={() => handleSelectSuggestion(item)}
+                  onMouseDown={(e) => {
+                    e.preventDefault(); // Prevents input blur before click
+                    handleSelectSuggestion(item);
+                  }}
                   onMouseEnter={() => setHighlightedIndex(idx)}
-                  className={`w-full text-left px-4 py-2.5 text-sm font-semibold transition-colors cursor-pointer ${
+                  className={`w-full text-left px-4 py-2.5 text-sm font-semibold transition-colors cursor-pointer select-none ${
                     highlightedIndex === idx
                       ? 'bg-[#8B1122] text-white font-bold'
                       : 'hover:bg-slate-100 text-[#0F172A]'
                   }`}
                 >
                   <span>{item}</span>
-                </button>
+                </div>
               ))}
             </div>
           )}
