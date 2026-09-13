@@ -38,7 +38,7 @@ function toE164(phone: string): string {
 }
 
 /**
- * Dispatch lead data to GoHighLevel via Private Integration API Token OR Inbound Webhook
+ * Dispatch lead data to GoHighLevel via Private Integration API Token (Upsert) OR Inbound Webhook
  */
 export async function sendLeadToGoHighLevel(payload: GHLPayload): Promise<{ success: boolean; message: string }> {
   const pitKey = process.env.GHL_PRIVATE_INTEGRATION_KEY || process.env.GHL_API_KEY || 'pit-24cfb3ea-b549-416e-aeb6-1d53e21b6b2e';
@@ -47,7 +47,7 @@ export async function sendLeadToGoHighLevel(payload: GHLPayload): Promise<{ succ
 
   const results: string[] = [];
 
-  // Method 1: GHL v2 Contacts API via Private Integration Token (PIT)
+  // Method 1: GHL v2 Contacts Upsert API via Private Integration Token (PIT)
   if (pitKey && pitKey.trim() !== '') {
     try {
       const e164Phone = toE164(payload.phone);
@@ -73,7 +73,7 @@ export async function sendLeadToGoHighLevel(payload: GHLPayload): Promise<{ succ
         source: 'Hammer House Florida Web Funnel',
       };
 
-      const apiRes = await fetch('https://services.leadconnectorhq.com/contacts/', {
+      const apiRes = await fetch('https://services.leadconnectorhq.com/contacts/upsert', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${pitKey.trim()}`,
@@ -87,8 +87,8 @@ export async function sendLeadToGoHighLevel(payload: GHLPayload): Promise<{ succ
       const resText = await apiRes.text();
 
       if (apiRes.ok) {
-        console.log('[GHL API Success] Contact created in GoHighLevel:', payload.leadCode, resText);
-        results.push('GHL API: Created successfully');
+        console.log('[GHL API Success] Contact upserted in GoHighLevel:', payload.leadCode, resText);
+        results.push('GHL API: Upserted successfully');
       } else {
         console.warn('[GHL API Notice]', apiRes.status, resText);
         results.push(`GHL API status ${apiRes.status}: ${resText}`);
